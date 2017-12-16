@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <title>Facebook</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+
+
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        
+        <style>
+  label { width: 100px; }
+ .img-container {
+        position: absolute;
+    top: 160px; bottom: 10px; left: 10px; right: 10px; //to place it as you want.
+
+}
+p.leftpadding11{
+margin-left: 27px;
+
+word-wrap: break-word;
+}
+
+p.leftpadding {
+    margin-left: 27px;
+    
+
+    
+    
+}
+
+
+
+
+.img-container1 {
+        position: absolute;
+    top: 300px; bottom: 10px; left:540px; right: 10px; //to place it as you want.
+
+}
+.img-container2 {
+        position: absolute;
+    top: 300px; bottom: 10px; left:230px; right: 10px; //to place it as you want.
+
+}
+p.comment1 {
+    margin-left: 16px;
+}
+
+
+
+.img-text {
+    width: 100%;
+    display: block;
+}
+  </style>
+        <script type="text/javascript">
+        $(document).ready(function() {
+
+        	
+          var feeling1;
+          	
+         
+        	
+        	
+        	$(".dropdown-menu li a").click(function(){
+        		  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        		  feeling1=  $(this).parents(".dropdown").find('.btn').val($(this).data('value')).text();
+        			//alert(feeling1);	 
+        	});        	
+        	
+        	
+        	
+        	
+              var foo = $.cookie("ID");
+            //alert(foo);
+             var x=$.cookie("ID");//current user logged in cookie
+             var y=$.cookie("ID1");//friend timeline ki cookie
+  
+  
+            $("#logoutForm").submit(function(e){
+                e.preventDefault();
+                      });
+            
+             
+
+            $("#suggestfriendsbutton").click(function(e){
+                
+            	
+            	
+                 $.ajax({
+        type: "POST",
+        contentType: "text/plain",  //send data to server in this format
+        url:"http://localhost:8080/facebook_group2/webapi/friend/getmyemail",
+        dataType: "text",  //expect response of this type
+        data: x,
+       success: function(resp){
+           
+          if(resp!=null){
+        	  //resp contains email id of logged in user
+           
+              //alert(resp);
+              //alert(y);
+              var email=resp;
+              var obj={userID:y};
+              var myjson=JSON.stringify(obj);
+              
+              $.ajax({
+      	        type: "POST",
+      	        contentType: "application/json",  //send data to server in this format
+      	        url:"http://localhost:8080/facebook_group2/webapi/friend/getfriendemail",
+      	        dataType: "text",  //expect response of this type
+      	        data: myjson,
+      	       success: function(resp){
+      	           
+      	          if(resp!=null){
+      	          
+      	        	  //resp contains email id of friend
+      	             // alert("uemailid"+email);
+      	             // alert("femailid"+resp);
+      	        	getSuggestedFriends(email,resp);
+      	              }
+      	          else{
+      	            
+      	              alert("null");
+      	          }
+      	           
+      	       },
+      	       
+      	      error: function(jqXHR, textStatus, errorThrown){
+      	        alert('inside status posting error: ' + textStatus);
+      	      }    
+      	                 
+      	                 
+      	                 });             
+
+              
+              
+              
+          }
+          else{
+            
+              alert("null");
+          }
+           
+       },
+       
+      error: function(jqXHR, textStatus, errorThrown){
+        alert('status posting error: ' + textStatus);
+      }    
+                 
+                 
+                 });             
+                 
+  });     //suggestedfriendsbutton ends here  
+             
+             
+             
+
+        	function getSuggestedFriends(myID,fID){
+        	 /*  
+        	  alert(myID);
+        	  alert(fID); */
+        	  
+        	  var obj={firstemailid:myID,secondemailid:fID};
+        	  var j=JSON.stringify(obj);
+        	  /* alert(obj.firstemailid);
+        	  alert(obj.secondemailid); */
+        	  $.ajax({
+        	        type:"POST",
+        	        contentType: "application/json",  //send data to server in this format
+        	        url:"http://localhost:8080/facebook_group2/webapi/friend/suggestedFriends",
+        	        dataType: "json",  //expect response of this type
+        	        data: j,
+        	       success: function(resp){
+        	           
+        	          if(resp!=null){
+        	           
+        	        	  var data =JSON.parse(JSON.stringify(resp));  
+                          
+                          console.log(data);
+        					 first=obj.firstemailid;
+        					 second = obj.secondemailid;
+                          
+                         //alert(first);
+                         //alert(second);
+                          
+                          
+                          var st;
+                          for (var i=0; i < data.length; i++){
+                        	st+="<div>";
+                        	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+                        	 st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                        	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                        	 st+="</div>"; 
+                        	 st+="<hr>";
+                         
+                        	 st=st.replace("undefined","");
+                        	 $("#showsuggestedfriends").html(st);
+                          }
+        	        	   
+                        
+                          
+                          
+        	        	  
+        	              }
+        	          else{
+        	            
+        	              alert("null");
+        	          }
+        	           
+        	       },
+        	       
+        	      error: function(jqXHR, textStatus, errorThrown){
+        	        alert('inside getSuggested Friends ' + textStatus);
+        	      }    
+        	                 
+        	                 
+        	                 });             
+        	                 
+          
+
+        	  
+        	  
+        	  
+          }//fun ends here
+          
+          
+          
+        	window.suggest = function(e1){
+           	 
+           	 var suggestemailid= $(e1).attr('id');
+           	 	var obj1={firstemailid:first,secondemailid:second,suggestedemailid:suggestemailid};
+           	 var jsonobj=JSON.stringify(obj1);
+           	 $.ajax({ 
+                    url: "http://localhost:8080/facebook_group2/webapi/friend/confirmsuggestion",
+                    type: "POST",
+                    dataType: "text",
+                    contentType : "application/json",
+                    data : jsonobj,
+                    crossDomain: true,
+                    processData: true,
+                    
+                    
+                    success: function(response){  
+                       
+                        // we have the response  
+                       if(response!=null){
+                
+                         //  alert(response);
+                          location.reload();
+                       }
+                       else{
+                           }
+                       
+                    },
+                    error: function(e){  
+                        alert('Error in like: ' + e);  
+                        alert(e.toString());
+                }               
+     
+    });
+           	 
+           	 
+            }//suggest fun ends here
+          
+          
+          
+  
+  
+             
+             
+                 window.like = function(e1){
+                	 var tempid= $(e1).attr('id');
+  				   var statusid = tempid.slice(4);
+                       var sid={statusID:statusid};
+                       var myJSON=JSON.stringify(sid);
+                       //alert(statusid);
+                       
+    				 //  alert(statusid);
+    				  
+                       
+                       $.ajax({ 
+                url: "http://localhost:8080/facebook_group2/webapi/status/incrementLike",
+                type: "POST",
+                dataType: "text",
+                contentType : "application/json",
+                data : myJSON,
+                crossDomain: true,
+                processData: true,
+                
+                
+                success: function(response){  
+                   
+                    // we have the response  
+                   if(response!=null){
+            
+                       //alert(response);
+                      location.reload();
+                   }
+                   else{
+                       }
+                   
+                },
+                error: function(e){  
+                    alert('Error in like: ' + e);  
+                    alert(e.toString());
+            }               
+ 
+}); 
+}//like function ends here
+            
+
+                 window.comment = function(e1){
+                     
+                       var statusid= $(e1).attr('id');
+                       var chk="comment_d";
+                       chk+=statusid;
+                      // alert(chk);
+                       var comment_desc=document.getElementById(chk).value;
+                       
+                      /*  alert(statusid);*/
+                       //alert("comment"+comment_desc); 
+                       var sid={statusID:statusid,comment_desc:comment_desc};
+                       var myJSON=JSON.stringify(sid);
+                       //alert(statusid);
+                       
+                   
+                       $.ajax({ 
+                url: "http://localhost:8080/facebook_group2/webapi/status/addComment",
+                type: "POST",
+                dataType: "text",
+                contentType : "application/json",
+                data : myJSON,
+                crossDomain: true,
+                processData: true,
+                
+                
+                success: function(response){  
+                   
+                    // we have the response  
+                   if(response!=null){
+                      $('#comment_d').val('');
+                       //alert(response);
+                      location.reload();
+                   }
+                   
+                   
+                },
+                error: function(e){  
+                    alert('Error121212: ' + e);  
+                    alert(e.toString());
+            }               
+ 
+}); 
+}//comment fun ends here
+
+
+          
+                     $("#postbutton").click(function(e){
+                         
+                       
+                    	 
+                    	 var obj1={userID:y};
+                         var myjson1=JSON.stringify(obj1);
+                         
+                         $.ajax({
+                 	        type: "POST",
+                 	        contentType: "application/json",  //send data to server in this format
+                 	        url:"http://localhost:8080/facebook_group2/webapi/friend/getfriendemail",
+                 	        dataType: "text",  //expect response of this type
+                 	        data: myjson1,
+                 	       success: function(resp){
+                 	           
+                 	          if(resp!=null){
+                 	          var friendemail=resp;
+                    	 
+                    	 
+                        var statusdesc= document.getElementById("posttext").value;
+                         //alert(x);
+                          $('#posttext').val('');
+                         var obj2={status_desc:statusdesc,feeling:feeling1,timelineid:friendemail};
+                 		 var mahjson=JSON.stringify(obj2);
+                 		 
+                         $.ajax({
+                type: "POST",
+                contentType: "application/json",  //send data to server in this format
+                url:"http://localhost:8080/facebook_group2/webapi/status/addStatus",
+                dataType: "text",  //expect response of this type
+                data: mahjson,
+               success: function(resp){
+                   
+                  if(resp!=null){
+                      
+                   //  alert(resp);
+                     /* $('#posttext').val('');
+   */                  location.reload();
+                      
+                  }
+                  else{
+                    
+                      alert("null");
+                  }
+                   
+               },
+               
+              error: function(jqXHR, textStatus, errorThrown){
+                alert('status posting error: ' + textStatus);
+              }    
+                         
+                         
+                         });             
+                         
+              //post button click ends here  
+
+                 	       }
+                         else
+                        	 {alert("error in getting friend email");}
+
+                         },
+                         error: function(e){  
+                             alert('Error121212: ' + e);  
+                             alert(e.toString());
+                       }       
+                   
+               });      
+                         
+          });                     
+                     
+          $("#comment").click(function(){
+                        /* $(this).next("#forcomment").slideToggle(200)
+                               .find("comment_d").focus(); */          
+                        return false;
+                    });
+                     
+                     
+                                   
+          $("#logoutButton1").click(function(e){
+              //alert("logout success");
+              // var obj = JSON.parse(JSON.stringify(resp));
+               window.location.replace("appHome.html");
+           
+               
+           });//logout button ends ends
+
+
+            //this ajax call to print user name on top logged in user row
+  //alert(foo);
+          $.ajax({
+             type: "GET",
+              contentType: "text/plain",  //send data to server in this format
+              url:"http://localhost:8080/facebook_group2/webapi/user/retrive",
+              dataType: "JSON",  //expect response of this type
+              data: foo,
+                   
+                   success: function(response){  
+                       // we have the response  
+                       if(response!=null){
+                        // alert("data fetched");
+                         var obj = JSON.parse(JSON.stringify(response));
+                         //alert(obj.emailID);
+                         //alert(obj.fname);
+                         //alert(obj.highschool);
+                             document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+                       }  
+                       
+                       else
+                         {
+                          alert("data cannot be fetched");
+                         }
+                     },
+          
+                error: function(e){  
+                      alert('Error121212: ' + e);  
+                      alert(e.toString());
+                }       
+            
+        });  //ajax call ends here
+
+		
+
+        
+        
+        
+        
+        var other_jwt = $.cookie("ID1");
+          //ajax call to fetch friend  personal info on going to his timeline
+    //alert(foo);
+      $.ajax({
+                 type: "GET",
+                    //send data to server in this format
+                  url:"http://localhost:8080/facebook_group2/webapi/user/retrive_other",
+                  dataType: "JSON",  //expect response of this type
+                  
+                     
+                       success: function(response){  
+                         // we have the response  
+                         if(response!=null){
+                          // alert("data fetched");
+                           var obj = JSON.parse(JSON.stringify(response));
+                           //docmuent.write(obj);
+                           //alert(obj.emailID);
+                           //alert(obj.fname);
+                           //alert(obj.highschool);
+                             document.getElementById("email").innerHTML="EmailID   : "+obj.emailID;
+                                   document.getElementById("School").innerHTML="HighSchool   : "+obj.highschool;
+                                   document.getElementById("name").innerHTML=obj.fname+" "+obj.lname;
+                                   document.getElementById("DOB").innerHTML="DOB       : "+obj.date;
+                                   document.getElementById("Mob").innerHTML="Contact   : "+obj.mob_no;
+                                   document.getElementById("college").innerHTML="College      : "+obj.college;
+                                   document.getElementById("work").innerHTML="Work Place   : "+obj.placeOfWork;
+                                   document.getElementById("town").innerHTML="HomeTown     : "+obj.hometown;
+                                   document.getElementById("workCity").innerHTML="City of Work : "+obj.cityOfWork;
+                                   document.getElementById("graduateSchool").innerHTML="Graduate School : "+obj.graduateSchool;
+                                   
+                             var path="users/"+obj.emailID+"/profilePic.jpg";
+                             var path1="users/"+obj.emailID+"/cover.jpg";
+		                           //alert(path);
+                             var email=obj.emailID;
+                             
+                             var path="users/"+email+"/profilePic.jpg";
+                             $("#image").attr('src', path);                            
+                            
+                         }  
+                         
+                         else
+                           {
+                            alert("data cannot be fetched");
+                           }
+                       },
+            
+                  error: function(e){  
+                        alert('Error121212: ' + e);  
+                        alert(e.toString());
+                  }       
+              
+          });//ajax call ends here
+
+          //ajax call for my friend or not to be shown in html panel
+          $.ajax({
+     		 type: "GET",
+ 	        contentType: "text/plain",  //send data to server in this format
+ 	        url:"http://localhost:8080/facebook_group2/webapi/friend/myFriendOrNot",
+ 	        dataType: "text",  //expect response of this type
+ 	       success: function(response){  
+               // we have the response  
+               if(response!=null)
+            	   {
+               var data =JSON.parse(JSON.stringify(response));
+               //document.write(data);
+               //alert(data);
+               var SearchResult;
+               if(data.mob_no=="0")
+               {   SearchResult="<div class="+"\"panel-body\""+">";
+         		    //SearchResult+="<div class="+"\"pull-left col-sm-3\""+"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"img_avatar1.png\""+" /></div>";
+         			
+         			SearchResult+="<div class="+"\"text-right\""+">";
+         			SearchResult+="<button type="+"\"button\""+" class="+"\"btn btn-primary\" id=\""+data.emailID+"\" OnClick=\"add(this);\""+" \">Add Friend<span class="+"\"glyphicon glyphicon-plus\""+"></span></button>";
+         			SearchResult+="<a class="+"\"btn btn-primary\""+" id="+"\"SentReq"+data.emailID+"\" href=\"\""+" style=\"visibility: hidden\";>Request Sent</a></div></div>";
+          			
+      
+               }
+               else
+            	{
+            	   SearchResult="<div class="+"\"panel-body\""+">";
+         		    //SearchResult+="<div class="+"\"pull-left col-sm-3\""+"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"img_avatar1.png\""+" /></div>";
+         			
+         			SearchResult+="<div class="+"\"text-right\""+">";
+         			//SearchResult+="<button type="+"\"button\""+" class="+"\"btn btn-primary\">Friends<span class="+"\"glyphicon glyphicon-plus\""+"></span></button>";
+         			SearchResult+="<button type="+"\"button\""+" class="+"\"btn btn-primary\">Friend<span class="+"\"\""+"></span></button>";
+             		
+            	}
+           
+       	   $("#SearchResult").html(SearchResult);
+            	   }
+ 	       },
+ 	       
+ 	      error: function(e){  
+					alert('Error friend or not: ' + e);  
+					
+		}			
+          
+          });//ajax call ends here
+          
+          
+          
+
+                    //ajax call to show my all friends on my friend ki timeline
+          $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/friend/getMyAllFriends",
+              type: "GET",
+              dataType: "json",
+              contentType : "application/json",
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+           	   
+                  // we have the response  
+           	   if(response!=null){
+                  var data =JSON.parse(JSON.stringify(response));  
+                   var allFriends;
+           	 
+                 	for (var i=0; i < data.length; i++){
+               		 allFriends+="<div class=\"panel-body\">";
+               
+          	 allFriends+='<a href="friendTimeline.html" OnClick=go(this); id="'+data[i].userID+'" data-html="true"  data-placement="left" data-toggle="popover"  data-trigger="click hover" data-content=\'<div class="item active"><img src="users/'+data[i].emailID+'/cover.jpg" class=" img-responsive" width="1000" height="400" style="float:left;"><div><div class="img-container" style="display:inline-block;"><img class="img-thumbnail" src="users/'+data[i].emailID+'/profilePic.jpg" style="width:60px;height:60px;/"></div><div class="text" style="display:inline-block;margin-left:0.2cm;"><p><strong>'+data[i].fname+" "+data[i].lname+'</strong></p></div><div style="margin-left:1.5cm;"><p style="color:grey"><span class="glyphicon glyphicon-home"></span> <b>'  +'Lives in: '+ '</b> '+ data[i].hometown+'<br/><br/><span class="glyphicon glyphicon-gift"></span> <b>Born on: </b> '+ data[i].date +'<br><br><a href="#" style="color:grey"; OnClick=mutual(this); id='+data[i].userID+'><span class="glyphicon glyphicon-user"></span> See Mutual Friends</p></div></div>\'>'+'<img src="users/'+data[i].emailID+'/profilePic.jpg" style="width:20px;height:20px;">'+data[i].fname+" "+data[i].lname+'</a><br/>';
+
+                       allFriends+="</div>";
+               		allFriends+="</div>";
+  					     	}
+               	
+               allFriends=allFriends.replace("undefined","");
+           	   $("#allFriends").html(allFriends);
+          
+                  }  
+                  
+                  else
+               	   {
+               	  alert("something wrong");
+               	   }
+                },
+  	    
+     			error: function(e){  
+       					alert('Error121212: ' + e);  
+       					alert(e.toString());
+     			}				
+       
+  	  });//ajax call end
+    	
+    	  
+         	window.go = function(e1){
+       		 
+     		   var friendUserID= $(e1).attr('id');
+     		   $.cookie("ID1",friendUserID);
+     		   //window.location.replace("friendTimeline.html");
+         	  
+     		
+     	   }
+
+  	  
+         	 window.mutual=function(e1){
+        		 var foo=$(e1).attr('id');
+        		  $.cookie("ID5",foo); 
+        		//  alert(foo);
+        			$.ajax({ 
+                        url: "http://localhost:8080/facebook_group2/webapi/friend/count_of_MutualFriends",
+                        type: "GET",
+                        dataType: "json",
+                        contentType : "application/json",
+                        crossDomain: true,
+                        processData: true,
+                        
+                        
+                        success: function(response){  
+                     	   
+                            // we have the response  
+                     	   if(response!=null){
+                            // alert("data is come");
+                     		  var data =JSON.parse(JSON.stringify(response));
+        						 
+                     		    var st;
+                     		   if(data.length==0){
+                                   st+="<div><p>No Mutual Friends Found for this friend</p></div>";
+                                   }
+                                // $("#showlikesnames").html(st);
+                                else{
+                                 for (var i=0; i < data.length; i++){
+                              	st+="<div>";
+                              	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+                              	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                              	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                              	 st+="</div>"; 
+                              	 st+="<hr>";
+                                 }
+                              	 
+                                } 
+                                 
+                                 st=st.replace("undefined","");
+                              	 $("#showMutualnames").html(st);
+                                 
+                                 $('#MutualModal').modal({
+                                     show: true
+                                 });
+                     	   
+                     	   }  
+                            
+                            else
+                         	   {
+                         	  alert("something wrong");
+                         	   }
+                          },
+         	    
+               			error: function(e){  
+                 					alert('Error121212: ' + e);  
+                 					alert(e.toString());
+               			}				
+                 
+         	  }); 
+        	
+        	  
+        	  }//mutual fun ends here
+  	  
+  	  
+  	  
+
+             	var other_userID = $.cookie("ID1");
+                //this ajax call to get all my status on my  other ke timeline page pe
+                        $.ajax({ 
+                   url: "http://localhost:8080/facebook_group2/webapi/status/getOtherAllStatus",
+                   type: "GET",
+                   dataType: "json",
+                   contentType : "application/json",
+                   crossDomain: true,
+                   processData: true,
+                   success: function(response){  
+                     
+                       // we have the response  
+                     if(response!=null){
+                       var data =JSON.parse(JSON.stringify(response));  
+                       
+                       
+                       console.log(data);
+                       var st;
+                       var fname,lname;
+for (var i=data.length-1; i >=0; i--){
+                    	   
+	   var email =data[i].emailID; 
+	   
+ 	  /*  <a href='#target2' id='target2' class='target'>Target 2</a>
+  	   */
+ 	   st+="<div class="+"\"panel panel-default\""+">";
+ 	   st+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+ 	   st+="<div class="+"\"row\""+">";
+ 	   st+="<div class="+"\"col-md-12\""+">";
+ 		 st+="<div class=\" col-sm-3\"><img class="+"\"img-responsiveimg-thumbnail\" style=\"max-height:60px;\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+          st+="<div class=\" col-sm-5\"><p><font size="+"\"4\""+"color="+"\"blue\""+">"+data[i].name+"</font></p></div>" ;
+           //st+="<br>";
+          st+="</div>";
+         // st+="<hr>";
+          st+="<div class="+"\"row\""+">";
+         
+          if(data[i].feeling==null)
+        	{
+        	  st+="<br><br><br>";
+        	  
+        	}
+          else
+        	  {
+          st+="<div id="+"\"feelings\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></div>" ;
+          
+          st+="<br><br>";
+        	  }
+        st+="<br>";/* 
+          st+="<ul type="+"\"disc\""+">"; */
+          st+="<p id="+"\"time\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].postedon+"<font></p>" ;
+       /*    st+="</ul>"; */
+          /* st+="<ul>";
+          st+="<li id="+"\"time\""+">"+data[i].postedon+"</li>" ;
+       	  st+="</ul>";
+           */
+          /* $(status_name).appendTo('#text_color');
+ 	   document.getElementById("forstatus").style.color="blue"; */
+ 	   st+="</div>";
+ 	   st+="<div class="+"\"row\""+">";
+ 	 	st+="<br>";
+ 	   st+="<p id="+"\"forstatus\""+"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"black\""+">"+data[i].status_desc+"</font></p>" ;
+ 	   st+="</div></div><hr>";
+ 	   st+="<div class="+"\"row\""+">";
+ 	   st+="<div class="+"\"col-md-12\""+">";
+ 	   st+="<ul class="+"\"list-inline\""+">";
+ 	   st+="<li>";
+ 	   
+ 		   if(data[i].color==1){
+ 			  // alert("testing11:  "+data[i].statusID);
+ 	   		//highlight(data[i].statusID);
+ 	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"blue\""+">Like</font></a>";
+ 		   }
+ 		   else{
+  	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+
+ 			   
+ 		   }
+ 		   
+ 	   
+
+ 	   st+="</li>";
+ 	   /* st+="<li>";
+ 	   st+="<a href=\""+data[i].statusID+"\""+"id=\""+data[i].statusID+"\""+"class=\""+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+ 	   st+="</li>"; */
+ 	   /* st+="<li>";
+ 	   st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+" OnClick=\"unlike(this);\""+"><span class="+"\"glyphicon glyphicon-thumbs-down\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Unlike</font></a>";
+ 	   st+="</li>"; */
+ 	 //  st+="<li>";
+ 	  // st+= "<a href="+"\"#\""+ "id=\""+data[i].statusID+"\""+"><span class="+"\"glyphicon glyphicon-comment\"" +"style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Comment</font></a>";
+ 	  // st+="</ul></div></div>";
+ 	   //st+="</div>";
+ 	   	//   st+="<div class="+"\"row\""+">";
+      //  st+="<div class="+"\"col-md-12\""+">";
+      st+="<li>";  
+      st+="<a id="+"\"likescount\""+">"+data[i].likesCount+"</a>";
+        st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+"onmouseover=\"likehover(this)\"><span style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Likes</font></a>";
+       st+="</li>";
+        // st+="	</div></div>";
+        //st+="</div>";
+ 	   st+="</ul></div></div></div>";
+
+        //st+="<hr>"; 
+        st+="<div class="+"\"panel-footer\"" +"id="+"\"o\""+">";
+        
+ 	   if(data[i].a.length==0){
+ 		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:0px;\""+">";
+ 	   }
+ 	   else{
+ 		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:80px;\""+">";
+ 	   
+ 	   for(var j=0;j<data[i].a.length;j++)
+		  
+ 			   
+		   {
+ 		    st+="<div class=\" col-sm-2\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+ 		    st+= "<div class=\" col-sm-5\"><p id="+"\"outputname\""+"><font size="+"\"3\""+"color="+"\"blue\""+">"+data[i].a[j].name+"</font></p></div>"; 
+ 			/* $(status_name).appendTo('#text_color');
+     	   document.getElementById("forstatus").style.color="blue"; */
+     	 	st+="<br><br>";
+     	  
+ 		   st+= "<p id="+"\"output\""+"class="+"\"comment1\""+"><font size="+"\"2\""+"color="+"\"black\""+">"+data[i].a[j].comment_desc+"</font></p>";
+ 	  st+="<br>";
+ 	   //st+="<hr>";
+		   }
+ 	   }
+ 	   st+="</div>";
+		   
+ 	   //st+="<ul>";
+ 	   //st+="<li class="+"\"media\""+">";
+ 	   st+="<div class="+"\"media-body\""+">";
+ 	   //st+="<div class="+"\"input-group\""+">";
+ 	   st+="<input type="+"\"text\""+" class="+"\"form-control\""+" id=\"comment_d"+data[i].statusID+"\""+" placeholder="+"\"Write a comment...\""+">";
+        //st+="<span class="+"\"input-group-btn\""+">";
+    		st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].statusID+"\""+" OnClick=\"comment(this);\">Post Comment</button>";
+    		//st+="</span>";
+    		//st+="</div>";
+    		st+="</div>";
+    		//st+="</li>";
+    		//st+="</ul>";
+    		st+="</div>";
+    		st+="</div>";
+         
+        
+                      
+                       st=st.replace("undefined","");
+                	   $("#abcd").html(st);
+                       
+                	   }    //outer for ends        
+                     }//if ends 
+                     },//success ends  
+
+                   
+          error: function(e){  
+          alert('Error121212: ' + e);  
+          alert(e.toString());
+      }   
+            
+        }); //ajax call ends
+
+
+
+           			 window.likehover = function(e1){
+           	    		  
+           	    		  var statusid= $(e1).attr('id');
+           	    		  
+           	    		 var obj={statusID:statusid};
+           	    		 var myjson=JSON.stringify(obj);
+           	    		 
+           	    			
+           	    			$.ajax({ 
+           	                    url: "http://localhost:8080/facebook_group2/webapi/status/getAllLikeName",
+           	                    type: "POST",
+           	                    dataType: "json",
+           	                    contentType : "application/json",
+           	                    crossDomain: true,
+           	                    processData: true,
+           	                    data:myjson,
+           	                    
+           	                    success: function(response){  
+           	                 	   
+           	                    	 var data =JSON.parse(JSON.stringify(response)); 
+           	                        console.log(data);  
+           	                      
+           	                        
+           	                       
+           	                        
+           	                        
+           	                         var st;
+           	                        // $("#showlikesnames").html(st);
+           	                         for (var i=0; i < data.length; i++){
+           	                      	st+="<div>";
+           	                      	st+="<div class=\" col-sm-3\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+           	                      	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+           	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+           	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+           	                      	 st+="</div>"; 
+           	                      	 st+="<hr>";
+           	                       
+           	                      	 
+           	                        } 
+           	                         
+           	                         st=st.replace("undefined","");
+           	                      	 $("#showlikesnames").html(st);
+           	                         
+           	                         $('#likeModal').modal({
+           	                             show: true
+           	                         });
+           	                        
+           	                        
+           	                    },
+           	                    
+           	                    error: function(e){  
+           	    					alert('Errorinsidelikehover: ' + e);  
+           	    					alert(e.toString());
+           	    			}		
+           	                
+           	        	  }); //ajax call ends
+           	           		  
+           	    			
+           	    			
+           	    			
+           	    			
+           	    			
+           	    			
+           	    		 
+           	    	  }//like hover fun ends
+           	  
+        
+        
+        
+
+  	  $("#search").click(function(e){
+   	    var key=$("input#srch-term").val();
+          $.cookie("key",key);
+                  
+  	   });//search button ends ends
+        
+
+        });//document ready ends here
+        
+        
+        
+jQuery(document).ajaxComplete(function (e) {
+        	
+        	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+        	$.fn.popover.Constructor.prototype.leave = function(obj){
+        	  var self = obj instanceof this.constructor ?
+        	    obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+        	  var container, timeout;
+
+        	  originalLeave.call(this, obj);
+
+        	  if(obj.currentTarget) {
+        	    container = $(obj.currentTarget).siblings('.popover')
+        	    timeout = self.timeout;
+        	    container.one('mouseenter', function(){
+        	      //We entered the actual popover – call off the dogs
+        	      clearTimeout(timeout);
+        	      //Let's monitor popover content instead
+        	      container.one('mouseleave', function(){
+        	        $.fn.popover.Constructor.prototype.leave.call(self, self);
+        	      });
+        	    })
+        	  }
+        	};
+        	
+        	
+        	
+        	
+        	 $('[data-toggle="popover"]').popover({
+           		 placement:'left',
+           		 delay:{show: 50, hide: 400}
+           		 })  
+           	}); 
+        
+        
+         </script> 
+
+
+
+
+    </head>
+    
+    <body>
+        
+      <div class="container-fluid ">
+
+<div class="row row-fluid">
+<div class=" col-sm-12 col-xs-12 " id="main">
+						
+						<!-- top nav -->
+						   <div class="navbar navbar-blue navbar-static-top">  
+                            <div class="navbar-header">
+                              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                              </button>
+                              <a href="#" class="navbar-brand logo">f</a>
+                            </div>
+                            <nav class="collapse navbar-collapse " role="navigation" align="center">
+                            <form class="navbar-form navbar-left" action="Search.html">
+                                <div class="input-group input-group-sm" style="max-width:480px;">
+                                  <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                  <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit" id="search"><i class="glyphicon glyphicon-search"></i></button>
+                                  </div>
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav navbar-center">
+                            <li>
+                                <a href="timeLine1.html" id="userName"><i class="glyphicon glyphicon-user"></i> User Name</a>
+                              </li>
+                              <li>
+                                <a href="userHome1.html"><i class="glyphicon glyphicon-home"></i> Home</a>
+                              </li>
+                              <li>
+                                <a href="userFriend.html"><i class="glyphicon glyphicon-user"></i> Find Friends</a>
+                              </li>
+                              <!-- <li>
+                                <a href="todoPage.html" title="Friend Requests"><i class="glyphicon glyphicon-user"></i><span class="badge">9</span></a>
+                              </li>
+                                <li>
+                                <a href="todoPage.html" title="Mesages"><i class="glyphicon glyphicon-envelope"></i><span class="badge">3</span></a>
+                              </li>
+                              <li>
+                                <a href="todoPage.html" title="Notifications"><i class="glyphicon glyphicon-cloud"></i><span class="badge">5</span></a>
+                              </li> -->
+                             
+							 <li role="separator" class="divider"></li>
+   
+							<li> <div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    
+    <li><a type="submit" class="" id="logoutButton1">Logout</a></li>
+  </ul>
+</div> 
+							
+							</li>
+							</ul>
+                           
+                            
+                            </nav>
+                        </div>
+</div>
+</div>
+<div class="row row-fluid">
+<div class=" col-sm-9 col-xs-9" >
+<div class="media ">
+  	<div class="media-left">
+	
+<div class="panel panel-default">
+<div class="panel-body">       										
+<div class="carousel-inner">
+            <div class="item active">
+
+                    <img id="cover" src="cover.jpg"  class=" img-responsive" width="1000" height="400" style="float:left;">    
+                <div class='img-container'>
+                    <div class='img-text'>
+                        <img class="img-thumbnail" id="image"  src="" alt="..." width="250px" height="250px" />
+                       
+                    </div>
+
+                </div>  
+                  
+                
+  	
+  	<div class="img-container1" >
+  	<div class="img-text offset4">
+  	<a class="btn btn-default active" style="float:right;" href="friendTimeline.html">TimeLine</a>
+  	<!-- <a class="btn btn-default" href="todoPage.html">About</a>
+  	<a class="btn btn-default" href="todoPage.html">Photos</a> -->
+  	<a href="#postModal" role="button" data-toggle="modal" id="suggestfriendsbutton" class="btn btn-default pull-right"> Suggest Friends</a>
+  	</div></div></div>
+  </div>  </div>    </div>    </div>
+    </div></div></div>
+    <!-- cover pic profile pic ends here -->
+    <div class=" col-sm-3 col-xs-3 affix" style="float:right; left:970px; top:20px;" >
+    	 <br>
+	   <div class="panel panel-primary" style="float:right; left:970px; top:30px; min-height: 2000px">
+	   <div class="panel-heading"><h4>My Friends</h4></div>
+		<div class="pre-scrollable" style="max-height:580px;overflow-y: scroll;">   
+		<p id="allFriends"></p>
+			</div>
+		  </div>			    
+		</div>
+    <!-- friends ends here -->
+    <div class="row row-fluid">
+     <div class="col-sm-3 col-xs-3">
+		  <div class="panel-group" id="accordion">
+<div class="panel panel-Default">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        <h3 id="name"></h3></a>
+      </h4></div></div>
+           
+                                       <div class="panel panel-primary">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        Personal Info</a>
+      </h4></div>
+                                      <div id="collapse1" class="panel-collapse collapse ">
+      
+                                            <div class="panel-body">
+                                            
+                                           
+      
+     <pre width="5" class="media-left" id="email"></pre><br>
+      <pre class="media-left" id="DOB"></pre><br>
+      <pre class="media-left" id="Mob"></pre><br>   
+   <!--     <pre class="media-left">Sports :</pre><p id="sportID" class="media-right"></p>    <br>  -->
+                                            
+                                            
+                                            
+                                            </div>
+                                            </div>
+                                          </div>
+        <div class="panel panel-primary">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+        Background Info</a>
+      </h4></div>
+                                      <div id="collapse2" class="panel-collapse collapse ">
+         
+                                            <div class="panel-body">
+                                            
+                                            <div class="media">
+                                              <div class="media-right">
+                                              <h4 class="media-heading" id="name"></h4>
+       
+                                              
+                                            </div>
+                                            </div>
+   <pre class="media-left" id="college"></pre><br>        
+   <pre class="media-left" id="work"></pre>   <br>    
+      <pre class="media-left" id="town"></pre>        <br>
+      <pre class="media-left" id="workCity"></pre>    <br>
+      <pre class="media-left" id="School"></pre><br>
+      <pre class="media-left" id="graduateSchool"></pre><br>
+   <!--     <pre class="media-left">Sports :</pre><p id="sportID" class="media-right"></p>    <br>  -->
+                                            
+                                            
+                                            
+                                            </div></div>
+                                          </div>
+       </div>				  </div>
+	<!-- personal info ends here -->
+	
+	 <div class="col-sm-6 col-xs-6">
+	 							   
+		<div class="well"> 
+		   <form class="form-horizontal" role="form">
+											
+			 <div class="form-group" style="padding:14px;">
+			  <textarea class="form-control" placeholder="What's on your mind!" id="posttext"></textarea>
+			</div>
+			<div class="dropdown">
+  <button class="btn pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Feeling
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="Feeling">
+    <li><a href="#" data-value="Happy"><i class="glyphicon glyphicon-upload"></i>Happy</a></li>
+    <li><a href="#" data-value="Sad"><i class="glyphicon glyphicon-upload"></i>Sad</a></li>
+    <li><a href="#" data-value="Excited"><i class="glyphicon glyphicon-upload"></i>Excited</a></li>
+    <li><a href="#" data-value="Adventurous"><i class="glyphicon glyphicon-upload"></i>Adventurous</a></li>
+  	<li><a href="#" data-value="Hungry"><i class="glyphicon glyphicon-upload"></i>Hungry</a></li>
+  
+  </ul>
+</div>
+ 
+			
+			<button class="btn btn-primary pull-right" type="button" id="postbutton">Post</button><ul class="list-inline"> <li><!-- <a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a>--></li> </ul>
+		   </form>
+		  </div>
+								   
+								   
+<div id="abcd">
+  <!-- <div class="panel-body" id="forcomment">
+    Post metadata
+    <div class="row">
+      <div class="col-md-10">
+        <div class="media">for name pic 
+        </div>
+      </div>
+      </div>
+    Post content
+    <div class="row">
+      <div class="col-md-12">
+      <p id="status_name"></p>
+      <p id="feelings"></p>
+      <br><br>
+      <ul type="disc">
+      <li id="time"></li>
+       </ul> 
+       <p id="forstatus"></p>  status text
+      </div>
+    </div> 
+  <hr>  
+  <div class="row">
+ <div class="col-md-12">
+   <ul class="list-inline">
+     <li>
+     <a href="#thumbs-up"><span class="glyphicon glyphicon-thumbs-up" style="color:#3b5998"></span> <font color="#3b5998">Like</font></a>
+     </li>
+      <li>
+     <a href="#thumbs-up"><span class="glyphicon glyphicon-thumbs-down" style="color:#3b5998"></span> <font color="#3b5998">Unlike</font> </a>
+     </li> 
+     <li>
+     <a href="#" id="comment"><span class="glyphicon glyphicon-comment" style="color:#3b5998"></span> <font color="#3b5998">Comment</font></a>
+     </li>
+     
+   </ul>
+ </div>
+  </div>
+ </div>  div of panel body for status update 1
+ panel body footer
+ <div class="panel-footer" id="o">
+ <div class="row">
+   <div class="col-md-12">  
+      <p id="likescount"></p>
+      
+      <br>
+   </div> 
+   
+  </div>
+  
+  
+  <hr>
+  <div class="pre-scrollable" style="height:100px;">
+
+        <p id="output_name"></p>
+        
+       <p id="outputname"></p>
+
+       <p id="output"></p>
+       <br>
+       <hr>
+     
+  </div> 
+   
+   <ul>
+   <li class="media">
+      <div class="media-body">
+        <div class="input-group">
+          <input type="text" class="form-control" id="comment_d" placeholder="Write a comment...">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-primary pull-right" id="commentAdd">
+              Post Comment
+            </button>
+          </span>
+        </div>
+      </div>
+    </li>
+   </ul>
+   
+  
+ 
+  
+</div>
+ 
+ 
+ 
+</div> 
+</div>
+								  
+ -->								   
+    
+    </div>
+    
+    
+    </div>
+    
+    
+    
+    <!--post modal-->
+         <div id="postModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+             
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Close</button>
+                    Suggest Friends
+              </div>
+              <div class="modal-body">
+                  <form class="form center-block">
+                    <div class="form-group" id="showsuggestedfriends">
+                    
+                    
+                    </div>
+                  </form>
+              </div>
+              
+          </div>
+          </div>
+        </div> 
+    
+    
+    
+    <div id="MutualModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>your Mutual friends</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showMutualnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 		
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    <!--like modal-->
+		 <div id="likeModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>People Who Liked This Status</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showlikesnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+		
+    
+    
+        
+        
+        
+</body>
+
+</html>

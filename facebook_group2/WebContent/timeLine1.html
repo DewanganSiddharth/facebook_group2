@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Your Timeline</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+         <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+
+
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        
+  <script type="text/javascript" src="Jquery/jquery.popupoverlay.js"></script>
+  <style>
+  label { width: 100px; }
+ .img-container {
+        position: absolute;
+    top: 160px; bottom: 10px; left: 10px; right: 10px; /* to place it as you want. */
+
+}
+.img-container1 {
+        position: absolute;
+    top: 300px; bottom: 10px; left:660px; right: 10px; /* //to place it as you wan */t.
+
+}
+.img-container2 {
+        position: absolute;
+    top: 300px; bottom: 10px; left:230px; right: 10px; //to place it as you want.
+
+}
+
+.img-text {
+    width: 100%;
+    display: block;
+}
+  /* .postedonn{
+  
+  left:500px;
+  
+  }
+   */
+  
+  
+  p.leftpadding11{
+margin-left: 27px;
+
+word-wrap: break-word;
+}
+
+
+p.leftpadding {
+    margin-left: 27px;
+    
+
+    
+    
+}
+
+
+
+ p.col-sm-2{
+margin-left: 12px;
+}
+p.col-sm-12{
+margin-left: 10px;
+}
+
+
+
+
+
+ .custom{
+  width: 94px !important;
+  height:25px  !important;
+  margin-bottom:12px !important;
+  
+ }
+ .btn1{
+ padding: 0px 0px;
+ }
+
+p.comment1 {
+    margin-left: 25px;
+}
+.customtextarea{
+margin-left:20px;
+
+}
+  
+  
+  
+  </style>
+  
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var x=$.cookie("ID");//current user logged in cookie
+    var y=$.cookie("ID1");//friend timeline ki cookie
+    //document.write(x);
+    var email;
+    $("#logoutForm").submit(function(e){
+            e.preventDefault();
+     });
+    var email;
+    //this ajax call to print user name on top logged in user row
+    //alert(foo);
+             $.ajax({
+                  type: "GET",
+                 contentType: "text/plain",  //send data to server in this format
+                 url:"http://localhost:8080/facebook_group2/webapi/user/retrive",
+                 dataType: "JSON",  //expect response of this type
+                 data: foo,
+                   
+                   success: function(response){  
+                       // we have the response  
+                       if(response!=null){
+                          // alert("data fetched");
+                           var obj = JSON.parse(JSON.stringify(response));
+                           //alert(obj.emailID);
+                           //alert(obj.fname);
+                           //alert(obj.highschool);
+                               document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+                       }  
+                       
+                       else
+                           {
+                              alert("data cannot be fetchedii99009");
+                           }
+                     },
+            
+                      error: function(e){  
+                                alert('Error121212: ' + e);  
+                                alert(e.toString());
+                      }                
+            
+          });  //ajax call ends here
+
+
+             //ajax call to fetch friend  personal info on going to his timeline
+        var foo = $.cookie("ID");
+        //alert(foo);
+             $.ajax({
+                      type: "GET",
+                     contentType: "text/plain",  //send data to server in this format
+                     url:"http://localhost:8080/facebook_group2/webapi/user/retrive",
+                     dataType: "JSON",  //expect response of this type
+                     data: foo,
+                       
+                       success: function(response){  
+                           // we have the response  
+                           if(response!=null){
+                              /// alert("data fetched");
+                               var obj = JSON.parse(JSON.stringify(response));
+                              // alert(obj.emailID);
+                               //alert(obj.fname);
+                            //   alert(obj.highschool);
+                                    document.getElementById("email").innerHTML="EmailID   : "+obj.emailID;
+                                   document.getElementById("School").innerHTML="HighSchool   : "+obj.highschool;
+                                   document.getElementById("name").innerHTML=obj.fname+" "+obj.lname;
+                                   document.getElementById("DOB").innerHTML="DOB       : "+obj.date;
+                                   document.getElementById("Mob").innerHTML="Contact   : "+obj.mob_no;
+                                   document.getElementById("college").innerHTML="College      : "+obj.college;
+                                   document.getElementById("work").innerHTML="Current Employer  : "+obj.placeOfWork;
+                                   document.getElementById("town").innerHTML="HomeTown     : "+obj.hometown;
+                                   document.getElementById("workCity").innerHTML="City of Work : "+obj.cityOfWork;
+                                   document.getElementById("graduateSchool").innerHTML="Graduate School     : "+obj.graduateSchool;
+                                   
+                                  // document.getElementById("bestplace").innerHTML="Best Place : "+obj.bestPlace;
+                                   
+                                   document.getElementById("mob_no").defaultValue =obj.mob_no;
+                                   document.getElementById("college").defaultValue =obj.college;
+                                   document.getElementById("highschool").defaultValue =obj.highschool;
+                                   document.getElementById("workplace").defaultValue =obj.placeOfWork;
+                                   document.getElementById("hometown").defaultValue =obj.hometown;
+                                   document.getElementById("workcity").defaultValue =obj.cityOfWork;
+                                   document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+                                  
+                                   //document.getElementById("sportID").defaultValue =obj.sport;
+                                   document.getElementById("graduateSchool").defaultValue =obj.graduateSchool;
+                                   
+                                   
+                                   //alert(obj.emailID);
+                                   var email=obj.emailID;
+                                   
+                                   var path="users/"+email+"/profilePic.jpg";
+                                   $("#image").attr('src', path);    
+                                   var path1="users/"+email+"/cover.jpg"
+                               
+                                  
+                           }  
+                           
+                           else
+                               {
+                                  alert("data cannot be fetched");
+                               }
+                         },
+                
+                          error: function(e){  
+                                    alert('Error121212: ' + e);  
+                                    alert(e.toString());
+                          }                
+                
+              });//ajax call ends here
+            
+            //ajax call to show my all friends on my friend ki timeline
+                        $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/friend/getMyAllFriends",
+              type: "GET",
+              dataType: "json",
+              contentType : "application/json",
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+           	   
+                  // we have the response  
+           	   if(response!=null){
+                  var data =JSON.parse(JSON.stringify(response));  
+                   var allFriends;
+           	 
+                 	 
+                	for (var i=0; i < data.length; i++){
+              		 allFriends+="<div class=\"panel-body\">";
+              
+         	 allFriends+='<a href="friendTimeline.html" OnClick=go(this); id="'+data[i].userID+'" data-html="true"  data-placement="left" data-toggle="popover"  data-trigger="click hover" data-content=\'<div class="item active"><img src="users/'+data[i].emailID+'/cover.jpg" class=" img-responsive" width="1000" height="400" style="float:left;"><div><div class="img-container" style="display:inline-block;"><img class="img-thumbnail" src="users/'+data[i].emailID+'/profilePic.jpg" style="width:60px;height:60px;/"></div><div class="text" style="display:inline-block;margin-left:0.2cm;"><p><strong>'+data[i].fname+" "+data[i].lname+'</strong></p></div><div style="margin-left:1.5cm;"><p style="color:grey"><span class="glyphicon glyphicon-home"></span> <b>'  +'Lives in: '+ '</b> '+ data[i].hometown+'<br/><br/><span class="glyphicon glyphicon-gift"></span> <b>Born on: </b> '+ data[i].date +'<br><br><a href="#" style="color:grey"; OnClick=mutual(this); id='+data[i].userID+'><span class="glyphicon glyphicon-user"></span> See Mutual Friends</p></div></div>\'>'+'<img src="users/'+data[i].emailID+'/profilePic.jpg" style="width:20px;height:20px;">'+data[i].fname+" "+data[i].lname+'</a><br/>';
+
+                      allFriends+="</div>";
+              		allFriends+="</div>";
+ 					     	}
+              	               	
+               allFriends=allFriends.replace("undefined","");
+           	   $("#allFriends").html(allFriends);
+          
+                  }  
+                  
+                  else
+               	   {
+               	  alert("something wrong");
+               	   }
+                },
+  	    
+     			error: function(e){  
+       					alert('Error121212: ' + e);  
+       					alert(e.toString());
+     			}				
+       
+  	  });//ajax call end
+          
+        
+window.go = function(e1){
+         
+           var friendUserID= $(e1).attr('id');
+           $.cookie("ID1",friendUserID);
+           //window.location.replace("friendTimeline.html");
+          
+        
+       }
+  	  
+  	  
+window.mutual=function(e1){
+	 var foo=$(e1).attr('id');
+	  $.cookie("ID5",foo); 
+	//  alert(foo);
+		$.ajax({ 
+           url: "http://localhost:8080/facebook_group2/webapi/friend/count_of_MutualFriends",
+           type: "GET",
+           dataType: "json",
+           contentType : "application/json",
+           crossDomain: true,
+           processData: true,
+           
+           
+           success: function(response){  
+        	   
+               // we have the response  
+        	   if(response!=null){
+               // alert("data is come");
+        		  var data =JSON.parse(JSON.stringify(response));
+					 
+        		    var st;
+        		   if(data.length==0){
+                      st+="<div><p>No Mutual Friends Found for this friend</p></div>";
+                      }
+                   // $("#showlikesnames").html(st);
+                   else{
+                    for (var i=0; i < data.length; i++){
+                 	st+="<div>";
+                 	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+                 	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                 	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                 	 st+="</div>"; 
+                 	 st+="<hr>";
+                    }
+                 	 
+                   } 
+                    
+                    st=st.replace("undefined","");
+                 	 $("#showMutualnames").html(st);
+                    
+                    $('#MutualModal').modal({
+                        show: true
+                    });
+                   
+                   
+                
+               
+        	   
+        	   
+        	   
+        	   
+        	   
+        	   }  
+               
+               else
+            	   {
+            	  alert("something wrong");
+            	   }
+             },
+    
+  			error: function(e){  
+    					alert('Error121212: ' + e);  
+    					alert(e.toString());
+  			}				
+    
+  }); 
+
+ 
+ }//mutual fun ends here
+
+
+
+              
+              
+
+       $("#findFriendButton").click(function(e){
+           window.location.replace("userFriend.html");
+       });
+               
+       $("#homeButton").click(function(e){
+           window.location.replace("userHome1.html");
+       });        
+    
+    
+    
+      $("#logoutButton1").click(function(e){
+           var foo = $.cookie("ID");
+          // alert("logout success");
+            $.cookie("ID",null); 
+          window.location.replace("appHome.html");      
+           
+       });//logout button ends ends
+       $("#search").click(function(e){
+               
+           var key=$("input#srch-term").val();
+          
+           $.cookie("key",key);
+          
+            
+        });//search button ends ends
+        
+        
+       $("#updateDetails").click(function(e){
+          
+          var mob_no=$("input#mob_no").val();
+          var college=$("input#college").val();
+          var placeOfWork=$("input#workplace").val();
+          var hometown=$("input#hometown").val();
+          var cityOfWork=$("input#workcity").val();
+          var highschool=$("input#highschool").val();
+          var highschool=$("input#highschool").val();
+          var graduateSchool=$("input#graduateSchool").val();
+        
+          var obj = { mob_no:mob_no,college:college,placeOfWork:placeOfWork,
+                  hometown:hometown,cityOfWork:cityOfWork,highschool:highschool,graduateSchool:graduateSchool
+                  };  
+          var myJSON = JSON.stringify(obj);
+              
+            //document.write(myJSON);
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",  //send data to server in this format
+            url:"http://localhost:8080/facebook_group2/webapi/user/updateAllData",
+            dataType: "text",  //expect response of this type
+            data: myJSON,
+            success: function(resp){
+                
+                if(resp!=null){
+                                    //alert("update success");
+                                    
+                              // var obj = JSON.parse(JSON.stringify(resp));
+                               //window.location.replace("timeLine1.html");
+                     var obj1 = JSON.parse(JSON.stringify(resp));
+                       
+                            window.location.replace("timeLine1.html");
+                              
+                }    
+                else
+                {
+                    alert("update failed.. ")
+                    window.location.replace("tm.html");
+                }    
+                
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                alert('logout error: ' + textStatus);
+            }
+        });
+                   
+
+                
+                
+        
+        
+       
+
+       });//update button ends ends
+       
+       
+       var modalform1 = $('#uploadPic');
+          modalform1.submit(function() {
+          var fd1 = new FormData($('#uploadPic')[0]);
+          console.log(fd1);
+          alert("uploading");
+          $.ajax({
+          type : modalform1.attr('method'),
+          url : modalform1.attr('action'),
+          data : fd1,
+          enctype : 'multipart/form-data',
+          processData : false, // Important!
+
+          contentType : "text",
+          cache : false,
+          
+         
+          
+          });          
+          });
+          $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/status/getMyStatus",
+              type: "GET",
+              dataType: "json",
+              contentType : "application/json",
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+                  
+                  // we have the response  
+                  if(response!=null){
+                  var data =JSON.parse(JSON.stringify(response));  
+                  
+                  //console.log(data);
+                  
+                  var st;
+                  var fname,lname;
+                  for (var i=data.length-1; i >=0; i--){
+                	  
+               	   var email =data[i].emailID; 
+               	   
+               	  /*  <a href='#target2' id='target2' class='target'>Target 2</a>
+                	   */
+            	   st+="<div class="+"\"panel panel-default\""+">";
+            	   st+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+            	   st+="<div class="+"\"row\""+">";
+            	   st+="<div class="+"\"col-md-12\""+">";
+            		 st+="<p class=\" col-sm-3\"><img class="+"\"img-responsive img-thumbnail\" style=\"max-height:60px;\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+                     st+="<div class=\" col-sm-5\"><p><font size="+"\"4\""+"color="+"\"blue\""+">"+data[i].name+"</font></p></div>" ;
+                     
+                     	  
+                     	  st+="<br><br><br>";
+                     	  
+                      
+                          
+                      
+                     //st+="<br>";
+                     st+="</div>";
+                    // st+="<hr>";
+                     st+="<div class="+"\"row\""+">";
+                     /* if((data[i].name2==null)&&(data[i].feeling==null))
+                 	{
+                 	  
+                 	  
+                 	}
+                   else if((data[i].name2==null)&&(data[i].feeling!=null))
+                 	  {
+                   st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                   
+                 
+                 	  }
+                
+                   else if((data[i].name2!=null)&&(data[i].feeling!=null))
+                     {
+                	   st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                       
+                	   
+                     }
+                 */     			st+="<br>";
+                  /*  st+="<ul type="+"\"disc\""+">";
+*/                               st+="<p id="+"\"time\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].postedon+"<font></p>" ;
+                  /*  st+="</ul>"; */
+                   /*  /* st+="<ul>";
+                     st+="<li id="+"\"time\""+">"+data[i].postedon+"</li>" ;
+                  	  st+="</ul>";
+                      */
+                     /* $(status_name).appendTo('#text_color');
+            	   document.getElementById("forstatus").style.color="blue"; */
+            	  
+
+		   st+="</div>";
+		  st+="<br>";
+            	   st+="<div class="+"\"row\""+">";
+            	 	
+            	   st+="<p id="+"\"forstatus\""+"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"black\""+">"+data[i].status_desc+"</font></p>" ;
+            	 
+             	   if(data[i].flag==0)
+            	   st+="<p class=\" col-sm-12\"><img class="+"\"img-responsive\""+"alt=\"\""+"src="+"\"users/"+data[i].emailID+"/"+data[i].statusID+".jpg\""+"/></p>";
+            	   
+            		   
+            	   
+            	   st+="</div></div><hr>";
+            	   st+="<div class="+"\"row\""+">";
+            	   st+="<div class="+"\"col-md-12\""+">";
+            	   st+="<ul class="+"\"list-inline\""+">";
+            	   st+="<li>";
+        		   
+            	   
+            		   if(data[i].color==1){
+            			  // alert("testing11:  "+data[i].statusID);
+            	   		//highlight(data[i].statusID);
+            	   		
+            	   		st+="<li></li>";
+            	   		
+            	   		
+            	   		
+            	   		
+            	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"blue\""+">Like</font></a>";
+            	   		
+            		   }
+            		   else{
+           	   			st+="<li></li>";
+        	   		
+           	   		
+             	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+             	   		
+             		   
+            			   
+            		   }
+            		   
+            	   
+
+            	   
+            	   /* st+="<li>";
+            	   st+="<a href=\""+data[i].statusID+"\""+"id=\""+data[i].statusID+"\""+"class=\""+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+            	   st+="</li>"; */
+            	   /* st+="<li>";
+            	   st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+" OnClick=\"unlike(this);\""+"><span class="+"\"glyphicon glyphicon-thumbs-down\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Unlike</font></a>";
+            	   st+="</li>"; */
+            	 //  st+="<li>";
+            	  // st+= "<a href="+"\"#\""+ "id=\""+data[i].statusID+"\""+"><span class="+"\"glyphicon glyphicon-comment\"" +"style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Comment</font></a>";
+            	  // st+="</ul></div></div>";
+            	   //st+="</div>";
+            	   	//   st+="<div class="+"\"row\""+">";
+                 //  st+="<div class="+"\"col-md-12\""+">";
+                   
+                 st+="<a id="+"\"likescount\""+">"+"       "+data[i].likesCount+"</a>";
+                   st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+"onmouseover=\"likehover(this)\"><span style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Likes</font></a>";
+                  st+="</li>";
+                   // st+="	</div></div>";
+                   //st+="</div>";
+            	   st+="</ul></div></div></div>";
+
+                   //st+="<hr>"; 
+                   st+="<div class="+"\"panel-footer\"" +"id="+"\"o\""+">";
+                   
+            	   if(data[i].a.length==0){
+            		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:0px;\""+">";
+            	   }
+            	   else{
+            		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:80px;\""+">";
+            	   
+            	   for(var j=0;j<data[i].a.length;j++)
+        		  
+            			   
+        		   {
+            		    st+="<p class=\" col-sm-2\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+            		    st+= "<div class=\" col-sm-5\"><p id="+"\"outputname\""+"><font size="+"\"3\""+"color="+"\"blue\""+">"+data[i].a[j].name+"</font></p></div>"; 
+            			/* $(status_name).appendTo('#text_color');
+                	   document.getElementById("forstatus").style.color="blue"; */
+                	 	st+="<br><br><br>";
+                	  
+            		   st+= "<p id="+"\"output\""+"class="+"\"comment1\""+"><font size="+"\"2\""+"color="+"\"black\""+">"+data[i].a[j].comment_desc+"</font></p>";
+            	  st+="<br>";
+            	   //st+="<hr>";
+        		   }
+            	   }
+            	   st+="</div>";
+        		   
+            	   //st+="<ul>";
+            	   //st+="<li class="+"\"media\""+">";
+            	   st+="<div class="+"\"media-body\""+">";
+            	   //st+="<div class="+"\"input-group\""+">";
+            	   st+="<input type="+"\"text\""+" class="+"\"form-group col-sm-9 customtextarea\""+" id=\"comment_d"+data[i].statusID+"\""+" placeholder="+"\"Write a comment...\""+">";
+                   //st+="<div class="+"\"input-group-btn\""+">";
+               		st+="<button type="+"\"button\""+" class="+"\"btn1 btn-primary pull-right  custom\""+"id=\""+data[i].statusID+"\""+" OnClick=\"comment(this);\">Comment</button>";
+               		//st+="</span>";
+               		//st+="</div>";
+               		st+="</div>";
+               		//st+="</li>";
+               		//st+="</ul>";
+               		st+="</div>";
+               		st+="</div>";
+                    
+                   
+                   
+              
+          
+                 
+                  st=st.replace("undefined","");
+                  $("#abcd").html(st);
+                  
+                  }    //outer for ends        
+                  }//if ends 
+                  },//success ends  
+
+                
+            error: function(e){  
+                alert('Error121212: ' + e);  
+                alert(e.toString());
+        }        
+       
+      }); //ajax call ends
+      
+        
+          window.likehover = function(e1){
+	    		  
+	    		  var statusid= $(e1).attr('id');
+	    		  
+	    		 var obj={statusID:statusid};
+	    		 var myjson=JSON.stringify(obj);
+	    		 
+	    			
+	    			$.ajax({ 
+	                    url: "http://localhost:8080/facebook_group2/webapi/status/getAllLikeName",
+	                    type: "POST",
+	                    dataType: "json",
+	                    contentType : "application/json",
+	                    crossDomain: true,
+	                    processData: true,
+	                    data:myjson,
+	                    
+	                    success: function(response){  
+	                 	   
+	                    	 var data =JSON.parse(JSON.stringify(response)); 
+	                        console.log(data);  
+	                      
+	                        
+	                       
+	                        
+	                        
+	                         var st;
+	                        // $("#showlikesnames").html(st);
+	                         for (var i=0; i < data.length; i++){
+	                      	st+="<div>";
+	                      	st+="<div class=\" col-sm-3\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+	                      	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+	                      	 st+="</div>"; 
+	                      	 st+="<hr>";
+	                       
+	                      	 
+	                        } 
+	                         
+	                         st=st.replace("undefined","");
+	                      	 $("#showlikesnames").html(st);
+	                         
+	                         $('#likeModal').modal({
+	                             show: true
+	                         });
+	                        
+	                        
+	                    },
+	                    
+	                    error: function(e){  
+	    					alert('Errorinsidelikehover: ' + e);  
+	    					alert(e.toString());
+	    			}		
+	                
+	        	  }); //ajax call ends
+	           		  
+	    			
+	    			
+	    			
+	    			
+	    			
+	    			
+	    		 
+	    	  }//like hover fun ends
+
+      
+      
+      
+      
+             window.like = function(e1){
+                 
+            	 var tempid= $(e1).attr('id');
+				   var statusid = tempid.slice(4);
+                     var sid={statusID:statusid};
+                   var myJSON=JSON.stringify(sid);
+                   //alert(statusid);
+                   
+                   
+                   $.ajax({ 
+           url: "http://localhost:8080/facebook_group2/webapi/status/incrementLike",
+           type: "POST",
+           dataType: "text",
+           contentType : "application/json",
+           data : myJSON,
+           crossDomain: true,
+           processData: true,
+           
+           
+           success: function(response){  
+               
+               // we have the response  
+               if(response!=null){
+       location.reload();
+       
+
+               }
+               else{
+                   }
+               
+            },
+            error: function(e){  
+                alert('Error in like: ' + e);  
+                alert(e.toString());
+        }                
+
+}); 
+
+}//like fun ends
+
+             
+             window.unlike = function(e1){
+                 
+                   var statusid= $(e1).attr('id');
+                   var sid={statusID:statusid};
+                   var myJSON=JSON.stringify(sid);
+                   //alert(statusid);
+                   
+                   
+                   $.ajax({ 
+         url: "http://localhost:8080/facebook_group2/webapi/status/decrementLike",
+         type: "POST",
+         dataType: "text",
+         contentType : "application/json",
+         data : myJSON,
+         crossDomain: true,
+         processData: true,
+         
+         
+         success: function(response){  
+             
+             // we have the response  
+             if(response!=null){
+     
+                 //alert(response);
+             }
+             
+             
+            },
+            error: function(e){  
+                alert('Error121212: ' + e);  
+                alert(e.toString());
+        }                
+
+}); 
+}//unlike fun ends
+
+             
+             
+             
+
+
+             window.comment = function(e1){
+                 
+                   var statusid= $(e1).attr('id');
+                   var chk="comment_d";
+                   chk+=statusid;
+                  // alert(chk);
+                   var comment_desc=document.getElementById(chk).value;
+                   
+                  /*  alert(statusid);*/
+                   //alert("comment"+comment_desc); 
+                   var sid={statusID:statusid,comment_desc:comment_desc};
+                   var myJSON=JSON.stringify(sid);
+                   //alert(statusid);
+                   
+               
+                   $.ajax({ 
+           url: "http://localhost:8080/facebook_group2/webapi/status/addComment",
+           type: "POST",
+           dataType: "text",
+           contentType : "application/json",
+           data : myJSON,
+           crossDomain: true,
+           processData: true,
+           
+           
+           success: function(response){  
+               
+               // we have the response  
+               if(response!=null){
+                  $('#comment_d').val('');
+                   //alert(response);
+                  location.reload();
+               }
+               else{
+                   }
+               
+            },
+            error: function(e){  
+                alert('Error121212: ' + e);  
+                alert(e.toString());
+        }                
+
+}); 
+}
+         	 $("#postbutton").click(function(e){
+         		 
+          		
+                var feeling;
+         		var timelineid="home";
+          		var statusdesc= document.getElementById("posttext").value;
+          		// var file_data = $("#file-select").prop("files")[0]; 
+          		 if(/* (file_data==null)&& */(statusdesc=="")){}
+          		 else{
+          		 //alert(x);
+          		 var obj2={status_desc:statusdesc,feeling:feeling,timelineid:timelineid};
+          		 var mahjson=JSON.stringify(obj2);
+          		 $.ajax({
+	        type: "POST",
+	        contentType: "application/json",  //send data to server in this format
+
+	        url:"http://localhost:8080/facebook_group2/webapi/status/addStatus",
+	        dataType: "json",  //expect response of this type
+
+	        data: mahjson,
+	        success: function(resp){
+	    	   
+	    	  if(resp!=null){
+
+	    		 var obj1 = JSON.parse(JSON.stringify(resp));
+       	   	 var statusid=obj1.statusID;
+       	   //console.log(statusid);
+     		
+       	
+          		  // Getting the properties of file from file field
+          		/* if(file_data!=null){
+          		var form_data = new FormData();                  // Creating object of FormData class
+          		form_data.append("file", file_data);             // Appending parameter named file with properties of file_field to form_data
+          
+
+          		form_data.append("status_id",statusid);  
+          	
+          		$.ajax({
+          	                
+          	              	type:"POST",
+          	              	contentType:false,
+          	              	url: "http://localhost:8080/facebook_group2/webapi/user/uploadProfilePic2",
+          	                processData: false,
+          	                data: form_data,                         // Setting the data attribute of ajax with file_data
+          	                success: function(){
+          	                	
+          	                	
+          	                	 if(resp!=null){alert("pic posted");}
+          	                	else{} 
+          	                	
+          	                	
+          	                
+          	      				location.reload();
+          		      	       },
+          	          	       
+          	          	      error: function(){
+          	        	           // alert('status posting errorrrrrr');
+          	        	        }	 
+          	                     
+          		
+          		
+          		});    ///inner ajax ends              
+          		}	 */
+					location.reload();
+	    		 $('#posttext').val('');
+          		}//file data not null
+          		else
+          		{
+          			alert('hre');	
+          		}
+	    	  
+          		 
+	    	  },//suucess ends
+	    	  
+	    	   
+	      
+	       
+	      error: function(jqXHR, textStatus, errorThrown){
+            alert('status posting error: ' + textStatus);
+        }	 
+          		 
+          		 
+         });    		 
+          	             
+
+	                       
+      }
+  	
+});      	
+          
+               
+               
+              $("#comment").click(function(){
+                  /* $(this).next("#forcomment").slideToggle(200)
+                         .find("comment_d").focus(); */
+
+                         
+                         
+                  return false;
+              });
+               
+
+
+    });//document ready ends
+    
+    
+    jQuery(document).ajaxComplete(function (e) {
+    	
+    	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+    	$.fn.popover.Constructor.prototype.leave = function(obj){
+    	  var self = obj instanceof this.constructor ?
+    	    obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+    	  var container, timeout;
+
+    	  originalLeave.call(this, obj);
+
+    	  if(obj.currentTarget) {
+    	    container = $(obj.currentTarget).siblings('.popover')
+    	    timeout = self.timeout;
+    	    container.one('mouseenter', function(){
+    	      //We entered the actual popover – call off the dogs
+    	      clearTimeout(timeout);
+    	      //Let's monitor popover content instead
+    	      container.one('mouseleave', function(){
+    	        $.fn.popover.Constructor.prototype.leave.call(self, self);
+    	      });
+    	    })
+    	  }
+    	};
+    	
+    	 $('[data-toggle="popover"]').popover({
+       		 placement:'left',
+       		 delay:{show: 50, hide: 400}
+       		 })  
+       	}); 
+    
+
+</script>
+
+
+
+
+</head>
+<body> 
+<div class="container-fluid ">
+
+<div class="row row-fluid">
+<div class=" col-sm-12 col-xs-12 " id="main">
+                        
+                        <!-- top nav -->
+                           <div class="navbar navbar-blue navbar-static-top">  
+                            <div class="navbar-header">
+                              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                              </button>
+                              <a href="#" class="navbar-brand logo">f</a>
+                            </div>
+                            <nav class="collapse navbar-collapse " role="navigation" align="center">
+                            <form class="navbar-form navbar-left" action="Search.html">
+                                <div class="input-group input-group-sm" style="max-width:480px;">
+                                  <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                  <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit" id="search"><i class="glyphicon glyphicon-search"></i></button>
+                                  </div>
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav navbar-center">
+                            <li>
+                                <a href="timeLine1.html" id="userName"><i class="glyphicon glyphicon-user"></i> User Name</a>
+                              </li>
+                              <li>
+                                <a href="userHome1.html"><i class="glyphicon glyphicon-home"></i> Home</a>
+                              </li>
+                              <li>
+                                <a href="userFriend.html"><i class="glyphicon glyphicon-user"></i> Find Friends</a>
+                              </li>
+                             
+                             
+ 						 <li role="separator" class="divider"></li>
+   
+
+                            
+                            </li>
+
+	                              <li>
+                                
+                                	<a type="submit" class="" id="logoutButton1">Logout</a> 
+                             	
+                             </li>
+
+                            </ul>
+                           
+                            
+                            </nav>
+                        </div>
+                            
+                        
+                        </div>
+</div>
+
+<div class="row row-fluid">
+<div class=" col-sm-9 col-xs-9" >
+<div class="media ">
+      <div class="media-left">
+    
+<div class="panel panel-default">
+<div class="panel-body">                                               
+<div class="carousel-inner">
+            <div class="item active">
+
+                    <img id="cover" src="cover.jpg"  class=" img-responsive" width="1000" height="400" style="float:left;">    
+                <div class='img-container'>
+                    <div class='img-text'>
+                        <img  class="img-thumbnail" id="image" src="" alt="..."  width="300px" height="300px"/>
+                       
+                    </div>
+
+                </div>  
+                  
+                
+      <div class="img-container2" >
+      <div class="img-text offset4">
+      <div class="dropup">
+      <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Change
+      <span class="caret"></span>  
+  </button>
+  <ul class="dropdown-menu">
+    <li>
+    <form id="uploadPic"action="http://localhost:8080/facebook_group2/webapi/user/uploadProfilePic" method="post" enctype="multipart/form-data">
+        <p id="uploadPhoto">
+        Change profile pic:<input type="file" name="file" size="45" onchange="this.form.submit()" class="filestyle" data-classButton="btn btn-primary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here."/>
+        </p>
+        <input type="text" name="userId" id="PhotoId"  style="display: none;">
+        
+    </form>
+    </li>
+   
+    </ul>
+      </div></div></div>
+      <div class="img-container1" >
+      <div class="img-text offset4">
+      <a class="btn btn-default active" style="float:right;" href="timeLine1.html">TimeLine</a>
+     <!--  <a class="btn btn-default" href="todoPage.html">About</a>
+      <a class="btn btn-default" href="todoPage.html">Photos</a> -->
+      </div></div></div>
+  </div>  </div>    </div>    </div>
+    </div></div></div>
+    <!-- cover pic profile pic ends here -->
+    <div class=" col-sm-3 col-xs-3 affix" style="float:right; left:970px; top:20px;" >
+         <br>
+       <div class="panel panel-primary" style="float:right; left:970px; top:30px; min-height: 2000px">
+       <div class="panel-heading"><h4>My Friends</h4></div>
+        <div class="pre-scrollable" style="max-height:580px;overflow-y: scroll;">   
+        <p id="allFriends"></p>
+            </div>
+          </div>                
+        </div>
+    <!-- friends ends here -->
+    <div class="row row-fluid">
+     <div class="col-sm-3 col-xs-3">
+    <div class="panel-group" id="accordion">
+  <div class="panel panel-Default">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        <h3 id="name"></h3></a>
+      </h4></div></div>
+                                       <div class="panel panel-primary">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        Personal Info</a>
+      </h4></div>
+                                      <div id="collapse1" class="panel-collapse collapse ">
+      
+                                            <div class="panel-body">
+                                       
+      
+      <pre width="5" class="media-left" id="email"></pre><br>
+      <pre class="media-left" id="DOB"></pre><br>
+      <pre class="media-left" id="Mob"></pre><br>   
+   <!--     <pre class="media-left">Sports :</pre><p id="sportID" class="media-right"></p>    <br>  -->
+                                            
+                                            
+                                            
+                                            </div>
+                                            </div>
+                                          </div>
+        <div class="panel panel-primary">
+                                        <div class="panel-heading"><h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+        Background Info</a>
+      </h4></div>
+                                      <div id="collapse2" class="panel-collapse collapse ">
+         
+                                            <div class="panel-body">
+                                            
+                                            <div class="media">
+                                              <div class="media-right">
+                                              <h4 class="media-heading" id="name"></h4>
+       
+                                              
+                                            </div>
+                                            </div>
+   <pre class="media-left" id="college"></pre><br>        
+   <pre class="media-left" id="work"></pre>   <br>    
+      <pre class="media-left" id="town"></pre>        <br>
+      <pre class="media-left" id="workCity"></pre>    <br>
+      <pre class="media-left" id="School"></pre><br>
+      <pre class="media-left" id="graduateSchool"></pre><br>
+      <br>
+                                            
+                                            
+                                            </div></div>
+                                          </div>
+    <input type="button" id ="popup" class="btn btn-primary" value="Update Info" data-toggle="modal" data-target="#myModal">
+       </div>
+                                      </div>
+    <!-- personal info ends here -->
+    
+     <div class="col-sm-6 col-xs-6">
+                                    
+        <div class="well"> 
+           <form class="form-horizontal" role="form">
+                                            
+             <div class="form-group" style="padding:14px;">
+              <textarea class="form-control" placeholder="What's on your mind!" id="posttext"></textarea>
+            </div>
+            
+            
+             <br><br>
+ 	<!--  <form id="FormId">
+        <label for="file-select">Choose photo</label>
+        <input type="file" name="upload" id="file-select">
+    </form> -->
+ 	
+            <button class="btn btn-primary pull-right" type="button" id="postbutton" style="width:50px;">Post</button><ul class="list-inline"><li><a href=""><!-- <i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a> --></li></ul>
+           </form>
+          </div>
+                                   
+                                   
+<div id="abcd">
+  <div class="panel-body" id="forcomment">
+    <!-- Post metadata -->
+    <div class="row">
+      <div class="col-md-10">
+        <div class="media"><!-- for name pic  -->
+        </div>
+      </div>
+      </div>
+    <!-- Post content -->
+    <div class="row">
+      <div class="col-md-12">
+      <p id="status_name"></p>
+      <p id="feelings"></p>
+      <ul type="disc">
+      <li id="time"></li>
+      </ul>
+        
+       <p id="forstatus"></p>  <!-- status text -->
+      </div>
+    </div>
+  <hr>  
+  <div class="row">
+ <div class="col-md-12">
+   <ul class="list-inline">
+     <li>
+     <a href="#thumbs-up"><span class="glyphicon glyphicon-thumbs-up" style="color:#3b5998"></span> <font color="#3b5998">Like</font></a>
+     </li>
+      <li>
+     <a href="#thumbs-up"><span class="glyphicon glyphicon-thumbs-down" style="color:#3b5998"></span> <font color="#3b5998">Unlike</font></a>
+     </li>
+     <li>
+     <a href="#" id="comment"><span class="glyphicon glyphicon-comment" style="color:#3b5998"></span> <font color="#3b5998">Comment</font></a>
+     </li>
+     
+   </ul>
+ </div>
+  </div>
+ </div> <!--  div of panel body for status update 1 -->
+ <!-- panel body footer -->
+ <div class="panel-footer" id="o">
+ <div class="row">
+   <div class="col-md-12">  
+      <p id="likescount"></p>
+      
+      <br>
+   </div> 
+   
+  </div>
+  
+  
+  <hr>
+  <div class="pre-scrollable" style="height:100px;">
+
+        <p id="output_name"></p>
+        
+       <p id="outputname"></p>
+
+       <p id="output"></p>
+       <br>
+       <hr>
+     
+  </div> 
+   
+   <ul>
+   <li class="media">
+      <div class="media-body">
+        <div class="input-group">
+          <input type="text" class="form-control" id="comment_d" placeholder="Write a comment...">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-primary pull-right" id="commentAdd">
+              Post Comment
+            </button>
+          </span>
+        </div>
+      </div>
+    </li>
+   </ul>
+   
+  
+ 
+  
+</div>
+ 
+ 
+ 
+</div> 
+</div>
+                                  
+                                   
+    
+    </div>
+    
+    
+    </div>
+    
+    
+    <div id="MutualModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>your Mutual friends</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showMutualnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 	
+    
+    
+    
+    <!--like modal-->
+		 <div id="likeModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>People Who Liked This Status</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showlikesnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+		
+    
+    
+    
+    
+        
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog" >
+
+    <!-- Modal content-->
+<form action="" id="updateInfo">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Your Info</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+        <br>
+        <div class="form-group">
+          <label for="mob_no" >Mobile No:</label>
+          <input type="text"  id="mob_no" style="margin-left:10px;">
+        </div>
+        <br> 
+      <h4 style="color: black; margin-right:6em; margin-top:0px"><i class="fa fa-shield"></i>Background info</h4>
+      <div class="form-group">
+          <label for="college" >College:</label>
+          <input type="text"  id="college" style="margin-left:10px;">
+        </div>
+             <br>
+            <div class="form-group">
+          <label for="workplace" >Place of work:</label>
+          <input type="text"  id="workplace" style="margin-left:10px;">
+        </div>
+             <br>
+             <div class="form-group">
+          <label for="hometown" >Home town:</label>
+          <input type="text"  id="hometown" style="margin-left:10px;">
+        </div>
+             <br>
+      <div class="form-group">
+          <label for="workcity" >Workplace city:</label>
+          <input type="text"  id="workcity" style="margin-left:10px;">
+        </div>
+             <br>
+
+      <div class="form-group">
+          <label for="highschool" >HighSchool:</label>
+          <input type="text"  id="highschool" style="margin-left:10px;">
+        </div>
+       <div class="form-group">
+          <label for="graduateSchool" >GraduateSchool:</label>
+          <input type="text"  id="graduateSchool" style="margin-left:10px;">
+        </div>          
+             
+       
+    </div>
+    
+
+     
+      <div class="modal-footer">
+       <input type="button" id ="updateDetails" class="btn btn-primary" value="Update Info" data-dismiss="modal" >
+       <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+      </div>
+    
+       </form>
+    </div>
+
+  </div>
+
+        
+        
+        
+        
+        
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $('[data-toggle=offcanvas]').click(function() {
+                $(this).toggleClass('visible-xs text-center');
+                $(this).find('i').toggleClass('glyphicon-chevron-right glyphicon-chevron-left');
+                $('.row-offcanvas').toggleClass('active');
+                $('#lg-menu').toggleClass('hidden-xs').toggleClass('visible-xs');
+                $('#xs-menu').toggleClass('visible-xs').toggleClass('hidden-xs');
+                $('#btnShow').toggle();
+                
+            });
+            
+             $("#see-more").click(function() {
+                    $(this).hide();
+                });
+        });
+        
+        
+        </script>
+
+
+
+
+</body>
+
+</html>

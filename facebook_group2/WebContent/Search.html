@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search results</title>
+  <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+
+
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+          <style>
+  label { width: 100px; }
+  </style>
+  
+
+<script type="text/javascript">
+
+
+$(document).ready(function() {
+	
+	
+
+	var ID = $.cookie("ID");
+	if(ID==null)
+	{
+		window.location.replace("appHome.html");
+	}
+	
+	
+	
+	
+
+	var x=$.cookie("ID");
+	//document.write(x);
+	$("#logoutForm").submit(function(e){
+	        e.preventDefault();
+	 });
+	$("#filtermyFriends").click(function(e){
+	     
+	           
+	            var college=$("input#filterclg").val();
+	            $.cookie("college",college);
+	           // alert(college1);
+	            var hometown=$("input#filterhome").val();
+	            $.cookie("hometown",hometown);
+	         //alert(hometown1);
+	            var cityOfWork=$("input#filtercity").val();
+	            $.cookie("cityOfWork",cityOfWork);
+			//alert(cityOfWork1);
+	            var highschool=$("input#filterschool").val();
+	            $.cookie("highschool",highschool);
+				//alert(highschool1);
+	             var friends = [];
+            $.each($("input[name='tick']:checked"), function(){            
+                friends.push($(this).val());
+            });
+                friends=friends.join(" ");
+		           $.cookie("friends",friends);
+ 		});  
+
+	$(function(){
+		var foo = $.cookie("ID");
+		var key=$.cookie("key");
+		//alert(foo);
+		 	$.ajax({
+             		 type: "GET",
+         	        contentType: "text/plain",  //send data to server in this format
+         	        url:"http://localhost:8080/facebook_group2/webapi/user/retrive",
+         	        dataType: "JSON",  //expect response of this type
+         	        data: foo,
+	                   
+                       success: function(response){  
+	                       // we have the response  
+	                       if(response!=null){
+	                    	  // alert("data fetched");
+	                    	   var obj = JSON.parse(JSON.stringify(response));
+	                    	   //alert(obj.emailID);
+	                    	   //alert(obj.fname);
+	                    	   //alert(obj.highschool);
+		                    	   document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+		                    	   document.getElementById("srch-term").defaultValue =key;
+		                    	  
+	                       }  
+	                       
+	                       else
+	                    	   {
+	                    	  	alert("data cannot be fetchedfget");
+	                    	   }
+	                     },
+	    	    
+	          			error: function(e){  
+	            					alert('Error121212: ' + e);  
+	            					alert(e.toString());
+	          			}				
+	            
+	    	  });
+        
+		 	 $.ajax({
+        		 type: "GET",
+    	       // contentType: "text/plain",  //send data to server in this format
+    	        url:"http://localhost:8080/facebook_group2/webapi/friend/findFriends",
+    	        dataType: "JSON",  //expect response of this type
+    	       // data: foo,
+                  
+                  success: function(response){  
+                      // we have the response  
+                      if(response!=null){
+                   	  // alert("data fetched");
+                   	   var obj = JSON.parse(JSON.stringify(response));
+                   	   //alert(obj.emailID);
+                   	   //alert(obj.fname);
+                   	   //alert(obj.highschool);
+	                    	  // document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+	                    	  // document.getElementById("srch-term").defaultValue =key;
+	                    	  var data =JSON.parse(JSON.stringify(response));  
+	                    	   var SearchResult1="";
+	                    	   var SearchResult2="";
+	                    	   var SearchResult3="";
+	                           
+	                         	for (var i=0; i < data.length; i++){
+	                         	
+	                         		if(data[i].mob_no=="0")
+	                         		{
+	                     		    SearchResult1+="<div class="+"\"panel-body\""+">";
+	                     		    SearchResult1+="<div class="+"\"pull-left col-sm-3\""+"><img class="+"\"img-thumbnail\" height=\"50\"max-width=\"100px\" max-height=\"50px\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+	                     			SearchResult1+="<a href=\"friendTimeline.html\" OnClick=\"go(this);\" id=\""+data[i].userID +  "\""+">"+data[i].fname+" "+data[i].lname+"</span></a>";
+	                     			SearchResult1+="<div class="+"\"text-right\""+">";
+	                     			SearchResult1+="<button type="+"\"button\""+" class="+"\"btn btn-primary\" id=\""+data[i].emailID+"\" OnClick=\"add(this);\""+" \">Add Friend<span class="+"\"glyphicon glyphicon-plus\""+"></span></button>";
+	                     			SearchResult1+="<a class="+"\"btn btn-primary\""+" id="+"\"SentReq"+data[i].emailID+"\" "+" style=\"visibility: hidden\";>Request Sent<span class="+"\"glyphicon glyphicon-ok\""+"></span></a></div></div>";
+	                      			
+	                         		}
+	                         	else if(data[i].mob_no=="1"){
+	                         		SearchResult2+="<div class="+"\"panel-body\""+">";
+	                     		    SearchResult2+="<div class="+"\"pull-left col-sm-3\""+"><img class="+"\"img-responsive img-thumbnail\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+	                     			SearchResult2+="<a href=\"friendTimeline.html\" OnClick=\"go(this);\" id=\""+data[i].userID +  "\""+">"+data[i].fname+" "+data[i].lname+"</span></a>";
+	                     			SearchResult2+="<div class="+"\"text-right\""+">";
+	                     			SearchResult2+="<button type="+"\"button\""+" class="+"\"btn btn-primary\">Friends<span class="+"\"glyphicon glyphicon-ok\""+"></span></button></div></div>";
+	                     				
+	                         	}
+	                         	else{
+	                         	   SearchResult3+="<div class="+"\"panel-body\""+">";
+	                         	  SearchResult3+="<div class="+"\"pull-left col-sm-3\""+"><img class="+"\"img-responsive  img-thumbnail\"max-width=\"100px\" max-height=\"50px\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+		                     			SearchResult3+="<a href=\"friendTimeline.html\" OnClick=\"go(this);\" id=\""+data[i].userID +  "\""+">"+data[i].fname+" "+data[i].lname+"</span></a>";
+	                    			SearchResult3+="<div class="+"\"text-right\""+">";
+	                    			SearchResult3+="<a class="+"\"btn btn-primary\""+" id="+"\"SentReq"+data[i].emailID+"\" "+" >Request Sent<span class="+"\"glyphicon glyphicon-ok\""+"></span></a></div></div>";
+	                     			
+	                         	}
+	                         	}
+	                         	
+	                      // 	if(data.length==0)
+	                         		//SearchResult="<h3>No Record Found</h3>";
+	                           
+					            $.cookie("college","");
+					            $.cookie("hometown","");
+					            $.cookie("cityOfWork","");
+							    $.cookie("highschool","");
+							    $.cookie("friends","");
+	                         	if(SearchResult1=="")
+	                         		SearchResult1="<h3>No Results Found</h3>";
+	                         	if(SearchResult2=="")
+	                         		SearchResult2="<h3>No Results Found</h3>";
+	                         	if(SearchResult3=="")
+	                         		SearchResult3="<h3>No Results Found</h3>";
+	                         		
+	                         		
+	                         
+	                     	   $("#SearchResult1").html(SearchResult1);
+	                     	  $("#SearchResult2").html(SearchResult2);
+	                     	 $("#SearchResult3").html(SearchResult3);
+	                     	   
+	                    
+	                         }  
+	                         
+	                         else
+	                      	   {
+	                        	SearchResult1="<h3>No Record Found</h3>";
+	                       	SearchResult2="<h3>No Record Found</h3>";
+	                       	SearchResult3="<h3>No Record Found</h3>";
+	                        $("#SearchResult1").html(SearchResult1);
+	                     	  $("#SearchResult2").html(SearchResult2);
+	                     	 $("#SearchResult3").html(SearchResult3);
+	                     }
+	                       },
+	      	    
+	            			error: function(e){  
+	              					alert('Error121212: ' + e);  
+	              					alert(e.toString());
+	            			}				
+	       
+   	  });
+	});//fun ends
+   
+	window.go = function(e1){
+ 		 
+		   var friendUserID= $(e1).attr('id');
+		   $.cookie("ID1",friendUserID);
+		   //window.location.replace("friendTimeline.html");
+   	  
+		
+	   }
+		 	  window.add = function(e1){
+		 		 
+				   var friendEmailID= $(e1).attr('id');
+				   
+				   //alert(friendEmailID);
+					$.ajax({ 
+		                url: "http://localhost:8080/facebook_group2/webapi/friendRequest/addFriend",
+		                type: "POST",
+		                dataType: "text",
+		                contentType : "text/plain",
+		                data : friendEmailID,
+		                crossDomain: true,
+		                processData: true,
+		                
+		                
+		                success: function(response){  
+		             	   
+		                    // we have the response  
+		             	   if(response!=null){
+		                     
+								//alert("done");
+								
+								$(e1).hide();
+								var req="SentReq";
+								req+=friendEmailID;
+								 document.getElementById(req).style.visibility = 'visible';
+								 
+		             		 
+		                    }  
+		                    
+		                    else
+		                 	   {
+		                 	  alert("something wrong");
+		                 	   }
+		                  },
+		 	    
+		       			error: function(e){  
+		         					alert('Error121212: ' + e);  
+		         					alert(e.toString());
+		       			}				
+		         
+		 	  }); 
+			   }
+
+	
+	
+	
+	  $("#logoutButton1").click(function(e){
+		 $.cookie("ID",null);
+   	   window.location.replace("appHome.html");	  
+			
+	   });//logout button ends ends
+	   
+	   
+	    $('a[href="#uName"]').click(function(){
+    		if(ID!=null)
+    		{window.location.replace("timeLine1.html"); 
+    		}
+    		});
+	   
+		$('a[href="#uHome"]').click(function(){
+    		if(ID!=null)
+    		{window.location.replace("userHome1.html"); 
+    		}
+    		});
+		$('a[href="#uFriend"]').click(function(){
+    		if(ID!=null)
+    		{window.location.replace("userFriend.html"); 
+    		}
+    		});
+	   
+		 window.mutual=function(e1){
+    		 var foo=$(e1).attr('id');
+    		  $.cookie("ID5",foo); 
+    		//  alert(foo);
+    			$.ajax({ 
+                    url: "http://localhost:8080/facebook_group2/webapi/friend/count_of_MutualFriends",
+                    type: "GET",
+                    dataType: "json",
+                    contentType : "application/json",
+                    crossDomain: true,
+                    processData: true,
+                    
+                    
+                    success: function(response){  
+                 	   
+                        // we have the response  
+                 	   if(response!=null){
+                        // alert("data is come");
+                 		  var data =JSON.parse(JSON.stringify(response));
+    						 
+                 		    var st;
+                 		   if(data.length==0){
+                               st+="<div><p>No Mutual Friends Found for this friend</p></div>";
+                               }
+                            // $("#showlikesnames").html(st);
+                            else{
+                             for (var i=0; i < data.length; i++){
+                          	st+="<div>";
+                          	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+                          	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                          	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                          	 st+="</div>"; 
+                          	 st+="<hr>";
+                             }
+                          	 
+                            } 
+                             
+                             st=st.replace("undefined","");
+                          	 $("#showMutualnames").html(st);
+                             
+                             $('#MutualModal').modal({
+                                 show: true
+                             });
+                            
+                            
+                         
+                        
+                 	   
+                 	   
+                 	   
+                 	   
+                 	   
+                 	   }  
+                        
+                        else
+                     	   {
+                     	  alert("something wrong");
+                     	   }
+                      },
+     	    
+           			error: function(e){  
+             					alert('Error121212: ' + e);  
+             					alert(e.toString());
+           			}				
+             
+     	  }); 
+    	
+    	  
+    	  }//mutual fun ends here
+	   
+	   
+	   
+	   
+	   $("#search").click(function(e){
+ 		  
+           var key=$("input#srch-term").val();
+       	   $.cookie("key",key);
+           
+            
+ 	   });//search button ends ends
+ 	   	$.ajax({ 
+            url: "http://localhost:8080/facebook_group2/webapi/friend/getMyAllFriends",
+            type: "GET",
+            dataType: "json",
+            contentType : "application/json",
+            crossDomain: true,
+            processData: true,
+            
+            
+            success: function(response){  
+         	   
+                // we have the response  
+         	   if(response!=null){
+                var data =JSON.parse(JSON.stringify(response));  
+                 var allFriends;
+         	 	var showFriends;
+             	for (var i=0; i < data.length; i++){
+              		 allFriends+="<div class=\"panel-body\">";
+              
+         	 allFriends+='<a href="friendTimeline.html" OnClick=go(this); id="'+data[i].userID+'" data-html="true"  data-placement="left" data-toggle="popover"  data-trigger="click hover" data-content=\'<div class="item active"><img src="users/'+data[i].emailID+'/cover.jpg" class=" img-responsive" width="1000" height="400" style="float:left;"><div><div class="img-container" style="display:inline-block;"><img class="img-thumbnail" src="users/'+data[i].emailID+'/profilePic.jpg" style="width:60px;height:60px;/"></div><div class="text" style="display:inline-block;margin-left:0.2cm;"><p><strong>'+data[i].fname+" "+data[i].lname+'</strong></p></div><div style="margin-left:1.5cm;"><p style="color:grey"><span class="glyphicon glyphicon-home"></span> <b>'  +'Lives in: '+ '</b> '+ data[i].hometown+'<br/><br/><span class="glyphicon glyphicon-gift"></span> <b>Born on: </b> '+ data[i].date +'<br><br><a href="#" style="color:grey"; OnClick=mutual(this); id='+data[i].userID+'><span class="glyphicon glyphicon-user"></span> See Mutual Friends</p></div></div>\'>'+'<img src="users/'+data[i].emailID+'/profilePic.jpg" style="width:20px;height:20px;">'+data[i].fname+" "+data[i].lname+'</a><br/>';
+
+                      allFriends+="</div>";
+              		allFriends+="</div>";
+ 					     	}
+               	for (var i=0; i < data.length; i++){
+               		showFriends+="<label><input type=\"checkbox\" value=\""+data[i].fname+" "+data[i].lname+"\" name=\"tick\">"+data[i].fname+" "+data[i].lname+"</label>";
+               		showFriends+="<br>"
+					     	}
+             	
+             allFriends=allFriends.replace("undefined","");
+         	   $("#allFriends").html(allFriends);
+         	  showFriends=showFriends.replace("undefined","");
+         		$("#showFriends").html(showFriends);
+                }  
+                
+                else
+             	   {
+             	  alert("something wrong");
+             	   }
+              },
+	    
+   			error: function(e){  
+     					alert('Error121212: ' + e);  
+     					alert(e.toString());
+   			}				
+     
+	  });//ajax call end
+	///ajax call ends here*/
+	  
+	});//document ready ends
+	
+	 jQuery(document).ajaxComplete(function (e) {
+     	
+     	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+     	$.fn.popover.Constructor.prototype.leave = function(obj){
+     	  var self = obj instanceof this.constructor ?
+     	    obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+     	  var container, timeout;
+
+     	  originalLeave.call(this, obj);
+
+     	  if(obj.currentTarget) {
+     	    container = $(obj.currentTarget).siblings('.popover')
+     	    timeout = self.timeout;
+     	    container.one('mouseenter', function(){
+     	      //We entered the actual popover – call off the dogs
+     	      clearTimeout(timeout);
+     	      //Let's monitor popover content instead
+     	      container.one('mouseleave', function(){
+     	        $.fn.popover.Constructor.prototype.leave.call(self, self);
+     	      });
+     	    })
+     	  }
+     	};
+     	
+     	
+     	
+     	
+     	 $('[data-toggle="popover"]').popover({
+        		 placement:'left',
+        		 delay:{show: 50, hide: 400}
+        		 })  
+        	}); 
+     
+</script>
+
+
+
+
+</head>
+<body> 
+
+    <div class="wrapper">
+			<div class="box">
+				  <div class="row row-offcanvas row-offcanvas-right">
+				 
+				
+					<!-- main right col -->
+					<div class="column col-sm-12 col-xs-12" id="main">
+						
+						<!-- top nav -->
+						 	   <div class="navbar navbar-blue navbar-static-top">  
+                            <div class="navbar-header">
+                              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                              </button>
+                              <a href="#" class="navbar-brand logo">f</a>
+                            </div>
+                            <nav class="collapse navbar-collapse " role="navigation" align="center">
+                            <form class="navbar-form navbar-left" action="Search.html">
+                                <div class="input-group input-group-sm" style="max-width:480px;">
+                                  <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                  <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit" id="search"><i class="glyphicon glyphicon-search"></i></button>
+                                  </div>
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav navbar-center">
+                            <li>
+                                <a href="#uName" id="userName"><i class="glyphicon glyphicon-user"></i> User Name</a>
+                              </li>
+                              <li>
+                                <a href="#uHome"><i class="glyphicon glyphicon-home"></i> Home</a>
+                              </li>
+                              <li>
+                                <a href="#uFriend"><i class="glyphicon glyphicon-user"></i> Find Friends</a>
+                              </li>
+                              <!-- <li>
+                                <a href="todoPage.html" title="Friend Requests"><i class="glyphicon glyphicon-user"></i><span class="badge">9</span></a>
+                              </li>
+                                <li>
+                                <a href="todoPage.html" title="Mesages"><i class="glyphicon glyphicon-envelope"></i><span class="badge">3</span></a>
+                              </li>
+                              <li>
+                                <a href="todoPage.html" title="Notifications"><i class="glyphicon glyphicon-cloud"></i><span class="badge">5</span></a>
+                              </li> -->
+                             
+							 <li role="separator" class="divider"></li>
+   
+							<li> <div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    
+    <li><a type="submit" class="" id="logoutButton1">Logout</a></li>
+  </ul>
+</div> 
+							
+							</li>
+							</ul>
+                           
+                            
+                            </nav>
+                        </div>
+						<!-- /top nav -->
+				
+					  
+					  
+					
+							<div class="full col-sm-12">
+							  
+								<!-- content -->                      
+								<div class="row">
+				
+								
+									<!-- sidebar -->
+		
+					<!-- /sidebar -->
+				  
+				  
+				<div class="col-sm-3 col-xs-3">
+				
+ 											  <div class="panel panel-default">
+										<div class="panel-heading"> <h4>Filter Result</h4></div>
+										  <div class="panel-body">	
+ 	   <form id="contact" action="Search.html" >
+    <div class="input-group input-group-sm" style="max-width:480px;">
+   <div>
+	 <fieldset>
+	 <label for="filterhome">Hometown:</label>
+       <input placeholder="Filter using hometown" type="text" id="filterhome">
+    </fieldset>
+	<br>
+	<fieldset>
+	 <label for="filtercity">Current City:</label>
+      <input placeholder="Filter using current city" type="text" id="filtercity" >
+    </fieldset>
+	<br>
+	<fieldset>
+	 <label for="filterschool">High School:</label>
+      <input placeholder="Filter highschool" id="filterschool" type="text" >
+    </fieldset>
+	<br>
+	<fieldset>
+	<label for="filterclg">College:</label>
+      <input placeholder="Filter using college name" type="text" id="filterclg" >
+    </fieldset>
+	<br>
+	<fieldset>
+<h3>Mutual Friends</h3>
+<div id="showFriends">
+
+</div>
+</fieldset>
+	
+</div>
+  
+		<button type="submit" id="filtermyFriends" class="btn btn-primary btn-sm pull-right" style="margin-top:.5cm">Filter Friends</button>
+	
+		</div>
+      
+  
+  </form>
+  </div>
+  </div>									  
+  </div>
+										
+									 
+				  
+				  
+				<div class="col-sm-6 col-xs-6">
+				<div class="row">
+								
+				<div class="col-sm-12 col-xs-12">
+					<div class="panel panel-default"  >
+										<div class="panel-heading"><h4>Not Your Friends:</h4></div>
+										   <div class="pre-scrollable" style="height:220px;margin-bottom:.5cm;" >
+									<p id="SearchResult1"></p>
+									  
+									  </div>	
+				</div>
+				</div></div>
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="panel panel-default" style="height:300px;">
+										<div class="panel-heading"><h4>Already Friends:</h4></div>
+										 <div class="pre-scrollable" style="height:220px;margin-bottom:.5cm;" >
+				
+										<p id="SearchResult2"></p>
+									  </div>
+									  </div>	
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="panel panel-default" style="height:300px;">
+										<div class="panel-heading"><h4>Request Pending:</h4></div>
+										 <div class="pre-scrollable" style="height:220px;margin-bottom:.5cm;" >
+				
+										<p id="SearchResult3"></p>
+									  </div>
+									  </div>	
+				</div>
+				</div>
+				</div>
+								   <!-- main col right -->
+								  <div class=" col-sm-3 col-xs-3 affix" style="float:right; left:970px; top:20px;" >
+    	 <br>
+	   <div class="panel panel-primary" style="float:right; left:970px; top:30px; min-height: 2000px">
+	   <div class="panel-heading"><h4>My Friends</h4></div>
+		<div class="pre-scrollable" style="max-height:580px;overflow-y: scroll;">   
+		<p id="allFriends"></p>
+			</div>
+		  </div>			    
+		</div>
+								  
+								  
+							   </div><!--/row-->
+							  
+							  
+							  
+							</div><!-- /col-9 -->
+						</div><!-- /padding -->
+					</div>
+					<!-- /main -->
+				  
+				</div>
+			</div>
+			
+			
+<div id="MutualModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>your Mutual friends</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showMutualnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 		
+
+
+
+
+
+
+
+			
+			
+		
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+			$('[data-toggle=offcanvas]').click(function() {
+				$(this).toggleClass('visible-xs text-center');
+				$(this).find('i').toggleClass('glyphicon-chevron-right glyphicon-chevron-left');
+				$('.row-offcanvas').toggleClass('active');
+				$('#lg-menu').toggleClass('hidden-xs').toggleClass('visible-xs');
+				$('#xs-menu').toggleClass('visible-xs').toggleClass('hidden-xs');
+				$('#btnShow').toggle();
+				
+			});
+			
+			 $("#see-more").click(function() {
+		            $(this).hide();
+		        });
+        });
+        
+        
+        </script>
+
+
+</body>
+
+</html>

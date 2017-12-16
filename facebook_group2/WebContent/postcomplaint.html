@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <title>Facebook</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+       <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+ 		<script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+  		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+           <link rel="stylesheet" href="/resources/demos/style.css">
+        
+           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+            <script type="text/javascript" src="Jquery/jquery.popupoverlay.js"></script>  
+    
+
+
+
+
+<script>
+
+
+$(document).ready(function() {
+	
+	$("#press").click(function(e){
+	
+		
+		alert("inside press me");
+		
+	myjson={  
+			   "RequestInfo":{  
+				      "api_id":"org.egov.pgr",
+				      "ver":"1.0",
+				      "ts":"21-04-2017 15:55:37",
+				      "action":"POST",
+				      "did":"4354648646",
+				      "key":"xyz",
+				      "msg_id":"654654",
+				      "requester_id":"61",
+				      "auth_token":"a6dd825f-e7b5-4428-a128-cacc28f882aa"
+				   },
+				   "ServiceRequest":{  
+				      "service_code":"AOS",
+				      "description":"Garbage Toilet",
+				      "address_id":"258",
+				      "lat":"0",
+				      "lng":"0",
+				      "address":"Near Central area",
+				      "service_request_id":"hack-1",
+				      "first_name":"Kumar",
+				      "phone":"0000000000",
+				      "email":"kumar@ccc.com",
+				      "status":true,
+				      "service_name":"Absenteesim of sweepers",
+				      "requested_datetime":"",
+				      "media_url":"",
+				      "tenantId":"default",
+				      "values":{  
+				         "receivingMode":"Website",
+				         "receivingCenter":"",
+				         "status":"REGISTERED",
+				         "complainantAddress":"Near central bus stop"
+				      }
+				   }
+				}
+	
+	
+	
+	
+	//console.log(myjson);
+	
+	
+	
+	$.ajax({
+
+		 
+		
+			id: "542e4fec-0d70-0bec-4dfb-1d9b40f56eb8",
+			ContentType: "application/json",
+			url: "http://egov-micro-qa.egovernments.org/pgr/seva?jurisdiction_id=default",
+			preRequestScript: null,
+			pathVariables: {},
+			method: "POST",
+			tests: null,
+			currentHelper: "normal",
+			helperAttributes: {},
+			time: 1492770618347,
+			name: "ANONYMOUS COMPLAINT CREATION",
+			description: "hello",
+			collectionId: "fdc7e2f2-daad-3d61-5d83-105ae09301f3",
+			data : myjson,
+		    		   
+		   
+         
+         success: function(response){  
+             
+        	 if(response!=null){
+        		 alert("response is here: "+response);
+        	       var data =JSON.parse(JSON.stringify(response));
+                   console.log(data);
+        		 
+          	 }  
+             
+             else
+          	   {
+          	  		alert("returned null");
+          	   }
+           },
+  
+			error: function(e){  
+				console.log("error here"+e);
+  					
+			}				
+  
+});
+	
+	});	
+})
+
+
+</script>
+
+
+</head>
+<body>
+
+
+testing
+<input type="button" id ="press" class="btn btn-primary" value="press me" >
+
+
+
+</body>
+</html>

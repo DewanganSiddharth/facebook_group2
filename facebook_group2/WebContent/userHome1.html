@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <title>Facebook</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+       <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+ 		<script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+  		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+           <link rel="stylesheet" href="/resources/demos/style.css">
+        
+           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+            <script type="text/javascript" src="Jquery/jquery.popupoverlay.js"></script>  
+        <style>
+  
+p.leftpadding11{
+margin-left: 27px;
+
+word-wrap: break-word;
+}
+
+
+p.leftpadding {
+    margin-left: 27px;
+    
+
+    
+    
+}
+
+
+
+ p.col-sm-2{
+margin-left: 12px;
+}
+p.col-sm-12{
+margin-left: 10px;
+}
+
+
+
+
+
+ .custom{
+  width: 94px !important;
+  height:25px  !important;
+  margin-bottom:12px !important;
+  
+ }
+ .btn1{
+ padding: 0px 0px;
+ }
+
+p.comment1 {
+    margin-left: 28px;
+}
+.customtextarea{
+margin-left:20px;
+
+}
+
+</style>
+        
+       
+        
+         <style>
+        
+
+    </style>
+           
+        
+
+        
+   
+        <script type="text/javascript">        
+   
+    	
+        
+        
+        $(document).ready(function() {
+        	
+        	
+            /*
+            News API is a simple and easy-to-use API that returns JSON metadata for the headlines currently published on a
+            range of news sources and blogs. It is used to display live news headlines in our site!
+            
+            In this project news source is CNN.
+            
+            API keys allow you to access the REST API and allow access to JSON data. 
+            Each user and service account can have multiple API keys.
+            An API key is the name given to some form of secret token which is submitted alongside web service (or similar) requests 
+            in order to identify the origin of the request. The key may be included in some digest of the request content to further 
+            verify the origin and to prevent tampering with the values.
+
+            Typically, it is used to identify the source of a request positively, it acts as a form of authentication,
+            which can lead to access control.
+          
+            apikey used here is - a35ddf5f1c5f49638660efae1cd74ec0
+            
+            */  	
+              	
+              	
+              	var source = 'cnn'
+              		var request = `https://newsapi.org/v1/articles?source=`+source+`&apiKey=a35ddf5f1c5f49638660efae1cd74ec0`
+              		console.log(request)
+              		$.getJSON(request, (data) => {
+              		  console.log(data);
+              		  var trend;
+              		  for(var i=0;i<5;i++){
+              			  //alert(i);
+              			  
+              		  trend +="<a href=\""+data.articles[i].url+"\""+"class="+"\" glyphicon glyphicon-globe list-group-item\""+"target="+"\"_blank\""+">"+data.articles[i].title+"</a>";
+              		 // <a href="todoPage.html" class="list-group-item">Virat Kohli</a>
+              		  }
+              		  trend = trend.replace("undefined","");
+                      	   $("#trending").html(trend);
+              		  var trends;
+              		  for(var i=5;i<10;i++){
+              			  //alert(i);
+              			  
+              		trends +="<li>";	  
+              		trends +="<a href=\""+data.articles[i].url+"\""+"class="+"\" glyphicon glyphicon-globe list-group-item\""+"target="+"\"_blank\""+">"+  data.articles[i].title+"</a>";
+              		trends +="</li>";
+              		  }
+              		  trends = trends.replace("undefined","");
+                      	   $("#xs-menu-news").html(trends);
+              	
+              		})
+              	
+            
+        	var feeling;
+        	var timelineid="home";
+        	var emailID;
+        	
+        	
+        	$(".dropdown-menu li a").click(function(){
+        		  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        		  feeling=  $(this).parents(".dropdown").find('.btn').val($(this).data('value')).text();
+        			//alert(feeling);	 
+        	});     
+
+        	
+        
+        	
+        	
+        	
+        	var ID = $.cookie("ID");
+        	if(ID==null)
+        	{
+        		window.location.replace("appHome.html");
+        	}	
+
+        	var foo = $.cookie("ID");
+
+         	
+        	
+        	
+        	
+        	$.ajax({
+
+        		 type: "GET",
+    	        contentType: "text/plain",  //send data to server in this format
+    	        url:"http://localhost:8080/facebook_group2/webapi/user/retrive",
+    	        dataType: "JSON",  //expect response of this type
+    	        data: foo,
+                  
+                  success: function(response){  
+                      // we have the response  
+                      if(response!=null){
+                   	  // alert("data fetched");
+                   	   var obj = JSON.parse(JSON.stringify(response));
+                   	   //alert(obj.emailID);
+                   	   emailID = obj.emailID;
+                   	  
+                   	   //alert(obj.fname);
+                   	   //alert(obj.highschool);
+                       	   document.getElementById("userName").innerHTML=obj.fname+" "+obj.lname;
+                      }  
+                      
+                      else
+                   	   {
+                   	  	//alert("data cannot be fetched");
+                   	   }
+                    },
+   	    
+         			error: function(e){  
+           					//alert('Error121212: ' + e);  
+           					//alert(e.toString());
+         			}				
+           
+   	  });
+    		//alert(foo);
+    		 		
+    		
+    			  $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/chat/getMyAllConversations",
+              type: "GET",
+              dataType: "json",
+              
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+           	   
+                  // we have the response  
+           	   if(response!=null){
+                  var data =JSON.parse(JSON.stringify(response));
+                  
+                   var Notify="<h5>(Nothing New)</h5>";
+
+           	     
+           	   
+                 	for (var i=0; i < data.length; i++){
+                 			if(data[i].status=="NEW")
+                 		 Notify="<h5>(New Messages)</h5>";
+                 	}
+               
+           	   $("#notify").html(Notify);
+          
+                  }  
+                  
+                  else
+               	   {
+               	//  alert("something wrong");
+               	   }
+                },
+  	    
+     			error: function(e){  
+       					//alert('Error121212: ' + e);  
+       					//alert(e.toString());
+     			}				
+       
+  	  });//ajax call end
+  	  
+  	  $("#pressemail").click(function(e){
+  		  
+  		  var emailid=$("input#inputemail").val();
+  		  alert(emailid);
+  		  
+  		$.ajax({ 
+            url: "http://localhost:8080/facebook_group2/webapi/event/labtest",
+            type: "POST",
+            dataType: "json",
+            contentType : "text/plain",
+            crossDomain: true,
+            processData: true,
+            data:emailid,
+            
+            success: function(response){  
+          	   
+                // we have the response  
+         	   if(response!=null){
+                var data =JSON.parse(JSON.stringify(response));  
+                 var allevent;
+                // alert("hello");
+                console.log(data);
+                 if(data.length==0){
+                   	 $("#allevents").html("<font size=\"4\"> NO EVENT Created By You Yet</font>");
+                   }
+               for(var i=0;i<data.length;i++){
+            	   
+            	   allevent+="<div class=\"panel panel-default\">";
+            	//   allevent+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+            	   allevent+="<div class="+"\"row\""+">";
+            	   allevent+="<div class="+"\"col-md-12\""+">";
+            	   allevent+="<br><br>";
+            	   allevent+="<a href=\"#\" id=\""+data[i].eID+"\" OnClick=\"newtest(this);\"><p><font size="+"\"3\""+"color="+"\"blue\""+">"+"Event name:"+data[i].ename+"</font></p></a>" ;
+            	   allevent+="<hr>";
+            	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Host-name: "+data[i].hname+"</font></p><br>" ;
+            	   allevent+="<p><font size="+"\"3\" color=\"Green\" "+">"+"Event-date: "+data[i].event_date+"</font></p><br>" ;
+            	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Event-time: "+data[i].time+"</font></p><br>" ;
+            	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Event-location: "+data[i].location+"</font></p><br>" ;
+            	  // allevent+="<a href=\"EventDetail.html\" id=\""+data[i].eID+"\" OnClick=\"go(this);\">Invite-Friend</a> &nbsp;";
+            	  allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right \""+"id=\""+data[i].eID+"\""+" OnClick=\"go(this);\">Invite-Friend</button>"; 
+            	  allevent+="<a href="+"\"#\""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\""+"><span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> <font size=\"3\" color="+"\"#3b5998\""+">Delete</font></a>";
+            	   
+            	 // allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right \""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\">Delete</button>";
+            	  // allevent+="<a href=\"#\" id=\""+data[i].eID+"\" OnClick=\"dele(this);\">DELETE</a>";
+            	 
+            	   allevent+="</div>";
+            	   allevent+="<br>";
+                    allevent+="</div>";
+                    allevent+="</div>";
+                    //allevent+="</div>";
+                    /* allevent+="<span class="+"\"glyphicon glyphicon-trash\""+">";
+               		allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary \""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\">Delete</button>";
+               		allevent+="</span>";
+               		<span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> ;
+               		allevent+="<a href="+"\"#\""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\""+"><span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Delete</font></a>";
+             	   
+               		*/
+               }
+            	
+            allevent=allevent.replace("undefined","");
+            
+        	   $("#allevents").html(allevent);
+       
+               } 
+         	   
+         	    
+                else
+             	   {
+             	  //alert("something wrong");
+             	   }
+              },
+
+            
+            error: function(e){  
+				alert('Error in lab test: ' + e);  
+				alert(e.toString());
+		}		
+        
+	  }); //ajax call ends
+  		  
+  		  
+  	  });
+  	  
+  	  
+  	 window.newtest = function(e1){
+		 
+		  
+		   var eventid= $(e1).attr('id');
+		   //alert("event id is: "+eventid);
+		   
+		   var obj = { eID:eventid};  
+		     	var myJSON = JSON.stringify(obj);
+		   
+		   
+		   $.ajax({ 
+	            url: "http://localhost:8080/facebook_group2/webapi/event/labtest2",
+	            type: "POST",
+	            dataType: "json",
+	            contentType : "application/json",
+	            crossDomain: true,
+	            processData: true,
+	            data:myJSON,
+	            
+	            success: function(response){  
+	            	   
+	                  // we have the response  
+	           	   if(response!=null){
+	                  var data =JSON.parse(JSON.stringify(response));  
+	                   var allFriends;
+	           	 console.log(data);
+	                 	for (var i=0; i < data.length; i++){
+	               		 allFriends+="<div class=\"panel-body\">";
+	               
+	          	 allFriends+='<a href="friendTimeline.html" OnClick=go(this); id="'+data[i].userID+'" data-html="true" onmouseover="finalhover(this)"  data-placement="left" data-toggle="popover"   data-content=\'<div class="item active"><img src="users/'+data[i].emailID+'/cover.jpg" class=" img-responsive" width="1000" height="400" style="float:left;"><div><div class="img-container" style="display:inline-block;"><img class="img-thumbnail" src="users/'+data[i].emailID+'/profilePic.jpg" style="width:60px;height:60px;/"></div><div class="text" style="display:inline-block;margin-left:0.2cm;"><p><strong>'+data[i].fname+" "+data[i].lname+'</strong></p></div><div style="margin-left:1.5cm;"><p style="color:grey"><span class="glyphicon glyphicon-home"></span> <b>'  +'Lives in: '+ '</b> '+ data[i].startdate+'<br/><br/><span class="glyphicon glyphicon-gift"></span> <b>Born on: </b> '+ data[i].date +'<br><br><a href="#" style="color:grey"; OnClick=mutual(this); id='+data[i].userID+'><span class="glyphicon glyphicon-user"></span> See Mutual Friends</p></div></div>\'>'+'<img src="users/'+data[i].emailID+'/profilePic.jpg" style="width:20px;height:20px;">'+data[i].fname+" "+data[i].lname+'</a><br/>';
+	       		//data-trigger="click hover"
+                 //st+="<a href="+"\"friendTimeline.html\""+"id=\""+data[i].userID+"\""+"onmouseover=\"finalhover(this)\"><span style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Likes</font></a>";
+
+	                       allFriends+="</div>";
+	               		allFriends+="</div>";
+	  					     	}
+	               	
+	               allFriends=allFriends.replace("undefined","");
+	           	   $("#allFriends").html(allFriends);
+	          
+	                  }  
+	                  
+	                  else
+	               	   {
+	               	  alert("something wrong");
+	               	   }
+	                },
+
+	            error: function(e){  
+					alert('Error in lab new test: ' + e);  
+					alert(e.toString());
+			}		
+	    	    }); 
+		   
+		   
+  	 }	   
+  	  
+  	  
+  	window.finalhover = function(e1){
+		  
+		  var userid= $(e1).attr('id');
+		 // console.log("reaching here 386"+userid);
+		 var obj={userID:userid};
+		 var myjson=JSON.stringify(obj);
+		 
+			
+			$.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/user/finaltouch",
+              type: "POST",
+              dataType: "json",
+              contentType : "application/json",
+              crossDomain: true,
+              processData: true,
+              data:myjson,
+              
+              success: function(response){  
+           	   
+              	 var data =JSON.parse(JSON.stringify(response)); 
+                  console.log(data);  
+                
+                  
+                 
+                  
+                  
+                   var st;
+                  // $("#showlikesnames").html(st);
+                   for (var i=0; i < data.length; i++){
+                	st+="<div>";
+                	//st+="<div class=\" col-sm-3\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+                	st+="<font size="+"\"4\">"+data[i].group_name+"</font>";
+                	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                	 st+="</div>"; 
+                	 st+="<hr>";
+                 
+                	 
+                  } 
+                   
+                   st=st.replace("undefined","");
+                	 $("#showlikesnamesfinaltest").html(st);
+                   
+                   $('#finaltestModal').modal({
+                       show: true
+                   });
+                  
+                  
+              },
+              
+              error: function(e){  
+					alert('Errorinsidelikehover: ' + e);  
+					alert(e.toString());
+			}		
+          
+  	  }); //ajax call ends
+     		  
+			
+			
+			
+			
+			
+			
+		 
+	  }//like hover fun ends
+
+  	  
+  	  
+
+  	  // create event call	 
+ 	  $("#createEvent").click(function(e){
+ 		  var day1=$( "#day option:selected" ).text();
+ 		  var min1=$( "#month option:selected" ).text();
+          var year1=$("#year option:selected").text();
+        
+         
+        	var str=day1.concat(":",min1);
+ 		str=str.concat(" ",year1);
+        
+          var ename=$("input#eventname").val();
+         var hname=$("input#hostname").val();
+         var loc=$("input#location").val();
+         var esd=$("input#datepicker").val();
+         var eed=$("input#datepicker1").val();
+         var eventType=$('#Etype option:selected').text();
+         var obj = { ename:ename,hname:hname,location:loc,
+       		  event_date:esd,event_end_date:eed,eventType:eventType,
+       		  time:str};  
+     	var myJSON = JSON.stringify(obj);
+         	//alert(myJSON);
+			//document.write(myJSON);
+	   
+			 $.ajax({
+    	        type: "PUT",
+    	        contentType: "application/json",  //send data to server in this format
+    	        url:"http://localhost:8080/facebook_group2/webapi/event/create_event",
+    	        dataType: "text",  //expect response of this type
+    	        data: myJSON,
+    	        success: function(resp){
+    	            
+    	            if(resp!=null){
+    	   	                    	
+    	            	 var obj1 = JSON.parse(JSON.stringify(resp));
+                    	 // alert(obj1);
+                          window.location.replace("Event.html");
+    	            	 // location.reload();
+    	            }	
+    	            else
+    	            {
+    	            	alert("update failed.. ")
+    	            	//window.location.replace("timeLine1.html");
+    	            }	
+    	            
+    	            
+    	        },
+    	        error: function(jqXHR, textStatus, errorThrown){
+    	           // alert('logout error: ' + textStatus);
+    	        }
+    	    }); 
+	        	
+	       
+	   }); // create event ajax call end
+
+    		
+    		
+    		
+    			$.ajax({ 
+                   url: "http://localhost:8080/facebook_group2/webapi/status/getAllStatus",
+                   type: "GET",
+                   dataType: "json",
+                   contentType : "application/json",
+                   crossDomain: true,
+                   processData: true,
+                   
+                   
+                   success: function(response){  
+                	   
+                       // we have the response  
+                	   if(response!=null){
+                       var data =JSON.parse(JSON.stringify(response));  
+
+                       //alert("This is th email id: "+emailID);
+                       //console.log("dekho ise: "+data);
+
+                  //     console.log(data);
+                   	              
+                       
+                       var st;
+                       var fname,lname;
+                       
+                       for (var i=data.length-1; i >=0; i--){
+                    	   var email =data[i].emailID; 
+                       	   
+                        	  /*  <a href='#target2' id='target2' class='target'>Target 2</a>
+                         	   */
+                         	   
+                        	   st+="<div class="+"\"panel panel-default\""+">";
+                        	   st+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+                        	   st+="<div class="+"\"row\""+">";
+                        	   st+="<div class="+"\"col-md-12\""+">";
+                        		 st+="<p class=\" col-sm-3\"><img class="+"\"img-responsive img-thumbnail\" style=\"max-height:60px;\" "+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+                                 st+="<div class=\" col-sm-5\"><p><font size="+"\"4\""+"color="+"\"blue\""+">"+data[i].name+"</font></p></div>" ;
+                                  if(data[i].name2==null)
+                                 	  {
+                                 	  st+="<br><br><br>";
+                                 	  }
+                                   else{
+                                      st+="<div id="+"\"status_name2\""+"><font size="+"\"2\""+"color="+"\"blue\""+">"+data[i].name2+"</font></div>" ;
+                                      st+="<br>";
+                                   
+                                   }
+                                 //st+="<br>";
+                                 st+="</div>";
+                                // st+="<hr>";
+                                 st+="<div class="+"\"row\""+">";
+                                 if(data[i].group_name!=null){st+="<br>";
+                              	   st+="<p id="+"\"forstatus\"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"blue\""+">Posted in-> "+data[i].group_name+"</font></p>" ;
+                                 }
+                                 if((data[i].name2==null)&&(data[i].feeling==null))
+                             	{
+                             	  
+                             	  
+                             	}
+                               else if((data[i].name2==null)&&(data[i].feeling!=null))
+                             	  {st+="<br>";
+                               st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                               
+                             
+
+                             	  }
+                            
+                               else if((data[i].name2!=null)&&(data[i].feeling!=null))
+                                 {
+                            	   st+="<br>";
+                            	   st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                                   
+                            	   
+                                 }
+                                 
+                              /*  st+="<ul type="+"\"disc\""+">";
+ */ 
+ 								st+="<br>";
+ 								st+="<p id="+"\"time\""+"class="+"\"leftpadding \""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].postedon+"<font></p>" ;
+                                              	  
+
+         		   st+="</div>";
+         		  st+="<br>";
+                        	   st+="<div class="+"\"row\""+">";
+                        	   
+                        	   st+="<p id="+"\"forstatus\"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"black\""+">"+data[i].status_desc+"</font></p>" ;
+                        	   if(data[i].flag==0)
+                        	   st+="<p class=\" col-sm-12\"><img class="+"\"img-responsive\""+"alt=\"\""+"src="+"\"users/"+data[i].emailID+"/"+data[i].statusID+".jpg\""+"/></p>";
+                        	   
+                        		   
+                        	   
+                        	   st+="</div></div><hr>";
+                        	   st+="<div class="+"\"row\""+">";
+                        	   st+="<div class="+"\"col-md-12\""+">";
+                        	   st+="<ul class="+"\"list-inline\""+">";
+                        	   st+="<li>";
+                    		   
+                        	   
+                        		   if(data[i].color==1){
+                        			  // alert("testing11:  "+data[i].statusID);
+                        	   		//highlight(data[i].statusID);
+                        	   		
+                        	   		st+="<li></li>";
+                        	   		
+                        	   		
+                        	   		
+                        	   		
+                        	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"blue\""+">Like</font></a>";
+                        	   		
+                        		   }
+                        		   else{
+                       	   			st+="<li></li>";
+                    	   		
+                       	   		
+                         	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+                         	   		
+                         		   
+                        			   
+                        		   }
+                        		   
+                        	   
+
+                        	   
+                                
+                             st+="<a id="+"\"likescount\""+">"+"       "+data[i].likesCount+"</a>";
+                               st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+"onmouseover=\"likehover(this)\"><span style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Likes</font></a>";
+                              st+="</li>";
+                               // st+="	</div></div>";
+                               //st+="</div>";
+                        	   st+="</ul></div></div></div>";
+
+                               //st+="<hr>"; 
+                               st+="<div class="+"\"panel-footer\"" +"id="+"\"o\""+">";
+                               
+                        	   if(data[i].a.length==0){
+                        		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:0px;\""+">";
+                        	   }
+                        	   else{
+                        		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:80px;\""+">";
+                        	   
+                        	   for(var j=0;j<data[i].a.length;j++)
+                    		  
+                        			   
+                    		   {
+                        		    st+="<p class=\" col-sm-2\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+                        		    st+= "<div class=\" col-sm-5\"><p id="+"\"outputname\""+"><font size="+"\"3\""+"color="+"\"blue\""+">"+data[i].a[j].name+"</font></p></div>"; 
+                        			/* $(status_name).appendTo('#text_color');
+                            	   document.getElementById("forstatus").style.color="blue"; */
+                            	 	st+="<br><br><br>";
+                            	  
+                        		   st+= "<p id="+"\"output\""+"class="+"\"comment1\""+"><font size="+"\"2\""+"color="+"\"black\""+">"+data[i].a[j].comment_desc+"</font></p>";
+                        	  st+="<br>";
+                        	   //st+="<hr>";
+                    		   }
+                        	   }
+                        	   st+="</div>";
+                    		   
+                        	   st+="<div class="+"\"media-body\""+">";
+                        	   st+="<input type="+"\"text\""+" class="+"\"form-group col-sm-9 customtextarea\""+" id=\"comment_d"+data[i].statusID+"\""+" placeholder="+"\"Write a comment...\""+">";
+                           		st+="<button type="+"\"button\""+" class="+"\"btn1 btn-primary pull-right  custom\""+"id=\""+data[i].statusID+"\""+" OnClick=\"comment(this);\">Comment</button>";
+                           		st+="</div>";
+                           		st+="</div>";
+                           		st+="</div>";
+                                
+                               
+                               
+                          
+                      
+                       st=st.replace("undefined","");
+                	   $("#abcd").html(st);
+                       
+                	   }    //outer for ends        
+                	   }//if ends 
+                	   },//success ends  
+                	 
+    			error: function(e){  
+					//alert('Error121212: ' + e);  
+					//alert(e.toString());
+			}		
+            
+    	  }); //ajax call ends
+       	window.refresh = function(){
+       		$.ajax({ 
+                url: "http://localhost:8080/facebook_group2/webapi/status/getAllStatus",
+                type: "GET",
+                dataType: "json",
+                contentType : "application/json",
+                crossDomain: true,
+                processData: true,
+                
+                
+                success: function(response){  
+             	   
+                    // we have the response  
+             	   if(response!=null){
+                    var data =JSON.parse(JSON.stringify(response));  
+
+                    //alert("This is th email id: "+emailID);
+                    //console.log("dekho ise: "+data);
+
+               //     console.log(data);
+                	              
+                    
+                    var st;
+                    var fname,lname;
+                    
+                    for (var i=data.length-1; i >=0; i--){
+                 	   var email =data[i].emailID; 
+                    	   
+                     	  /*  <a href='#target2' id='target2' class='target'>Target 2</a>
+                      	   */
+                      	   
+                     	   st+="<div class="+"\"panel panel-default\""+">";
+                     	   st+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+                     	   st+="<div class="+"\"row\""+">";
+                     	   st+="<div class="+"\"col-md-12\""+">";
+                     		 st+="<p class=\" col-sm-3\"><img class="+"\"img-responsive img-thumbnail\" style=\"max-height:60px;\" "+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+                              st+="<div class=\" col-sm-5\"><p><font size="+"\"4\""+"color="+"\"blue\""+">"+data[i].name+"</font></p></div>" ;
+                               if(data[i].name2==null)
+                              	  {
+                              	  st+="<br><br><br>";
+                              	  }
+                                else{
+                                   st+="<div id="+"\"status_name2\""+"><font size="+"\"2\""+"color="+"\"blue\""+">"+data[i].name2+"</font></div>" ;
+                                   st+="<br>";
+                                
+                                }
+                              //st+="<br>";
+                              st+="</div>";
+                             // st+="<hr>";
+                              st+="<div class="+"\"row\""+">";
+                              if(data[i].group_name!=null){st+="<br>";
+                           	   st+="<p id="+"\"forstatus\"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"blue\""+">Posted in-> "+data[i].group_name+"</font></p>" ;
+                              }
+                              if((data[i].name2==null)&&(data[i].feeling==null))
+                          	{
+                          	  
+                          	  
+                          	}
+                            else if((data[i].name2==null)&&(data[i].feeling!=null))
+                          	  {st+="<br>";
+                            st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                            
+                          
+
+                          	  }
+                         
+                            else if((data[i].name2!=null)&&(data[i].feeling!=null))
+                              {st+="<br><br><br>";
+                         	   st+="<p id="+"\"feelings\""+"class="+"\"leftpadding\""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].feeling+"<font></p>" ;
+                                
+                         	   
+                              }
+                              
+                           /*  st+="<ul type="+"\"disc\""+">";
+*/ 
+								st+="<br>";
+								st+="<p id="+"\"time\""+"class="+"\"leftpadding \""+"><font size="+"\"2\""+"color="+"\"#A4A4A4\""+">"+data[i].postedon+"<font></p>" ;
+                                           	  
+
+      		   st+="</div>";
+      		  st+="<br>";
+                     	   st+="<div class="+"\"row\""+">";
+                     	   
+                     	   st+="<p id="+"\"forstatus\"class="+"\"leftpadding11\""+"><font size="+"\"3\""+"color="+"\"black\""+">"+data[i].status_desc+"</font></p>" ;
+                     	   if(data[i].flag==0)
+                     	   st+="<p class=\" col-sm-12\"><img class="+"\"img-responsive\""+"alt=\"\""+"src="+"\"users/"+data[i].emailID+"/"+data[i].statusID+".jpg\""+"/></p>";
+                     	   
+                     		   
+                     	   
+                     	   st+="</div></div><hr>";
+                     	   st+="<div class="+"\"row\""+">";
+                     	   st+="<div class="+"\"col-md-12\""+">";
+                     	   st+="<ul class="+"\"list-inline\""+">";
+                     	   st+="<li>";
+                 		   
+                     	   
+                     		   if(data[i].color==1){
+                     			  // alert("testing11:  "+data[i].statusID);
+                     	   		//highlight(data[i].statusID);
+                     	   		
+                     	   		st+="<li></li>";
+                     	   		
+                     	   		
+                     	   		
+                     	   		
+                     	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"blue\""+">Like</font></a>";
+                     	   		
+                     		   }
+                     		   else{
+                    	   			st+="<li></li>";
+                 	   		
+                    	   		
+                      	   		  st+="<a href="+"\"#thumbs-up\""+"id=\"like"+data[i].statusID+"\""+" OnClick=\"like(this);\"><span class="+"\"glyphicon glyphicon-thumbs-up\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Like</font></a>";
+                      	   		
+                      		   
+                     			   
+                     		   }
+                     		   
+                     	   
+
+                     	   
+                             
+                          st+="<a id="+"\"likescount\""+">"+"       "+data[i].likesCount+"</a>";
+                            st+="<a href="+"\"#thumbs-up\""+"id=\""+data[i].statusID+"\""+"onmouseover=\"likehover(this)\"><span style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Likes</font></a>";
+                           st+="</li>";
+                            // st+="	</div></div>";
+                            //st+="</div>";
+                     	   st+="</ul></div></div></div>";
+
+                            //st+="<hr>"; 
+                            st+="<div class="+"\"panel-footer\"" +"id="+"\"o\""+">";
+                            
+                     	   if(data[i].a.length==0){
+                     		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:0px;\""+">";
+                     	   }
+                     	   else{
+                     		   st+="<div class="+"\"pre-scrollable\""+" style="+"\"height:80px;\""+">";
+                     	   
+                     	   for(var j=0;j<data[i].a.length;j++)
+                 		  
+                     			   
+                 		   {
+                     		    st+="<p class=\" col-sm-2\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></p>";
+                     		    st+= "<div class=\" col-sm-5\"><p id="+"\"outputname\""+"><font size="+"\"3\""+"color="+"\"blue\""+">"+data[i].a[j].name+"</font></p></div>"; 
+                     			/* $(status_name).appendTo('#text_color');
+                         	   document.getElementById("forstatus").style.color="blue"; */
+                         	 	st+="<br><br><br>";
+                         	  
+                     		   st+= "<p id="+"\"output\""+"class="+"\"comment1\""+"><font size="+"\"2\""+"color="+"\"black\""+">"+data[i].a[j].comment_desc+"</font></p>";
+                     	  st+="<br>";
+                     	   //st+="<hr>";
+                 		   }
+                     	   }
+                     	   st+="</div>";
+                 		   
+                     	   st+="<div class="+"\"media-body\""+">";
+                     	   st+="<input type="+"\"text\""+" class="+"\"form-group col-sm-9 customtextarea\""+" id=\"comment_d"+data[i].statusID+"\""+" placeholder="+"\"Write a comment...\""+">";
+                        		st+="<button type="+"\"button\""+" class="+"\"btn1 btn-primary pull-right  custom\""+"id=\""+data[i].statusID+"\""+" OnClick=\"comment(this);\">Comment</button>";
+                        		st+="</div>";
+                        		st+="</div>";
+                        		st+="</div>";
+                             
+                            
+                            
+                       
+                   
+                    st=st.replace("undefined","");
+             	   $("#abcd").html(st);
+                    
+             	   }    //outer for ends        
+             	   }//if ends 
+             	   },//success ends  
+             	 
+ 			error: function(e){  
+					alert('Error121212: ' + e);  
+					alert(e.toString());
+			}		
+         
+ 	  }); //ajax call ends
+    	  }
+    		window.highlight = function(e1){
+    		  
+    			//alert("testing: "+e1);
+    			 var chk="like";
+				   chk+=e1;
+				 // alert(chk);
+				//  
+				  document.getElementById(chk).style.color="#ff0000";
+    		  
+    	  }
+    	  
+    	  
+    	  
+    			 window.likehover = function(e1){
+    	    		  
+    	    		  var statusid= $(e1).attr('id');
+    	    		  
+    	    		 var obj={statusID:statusid};
+    	    		 var myjson=JSON.stringify(obj);
+    	    		 
+    	    			
+    	    			$.ajax({ 
+    	                    url: "http://localhost:8080/facebook_group2/webapi/status/getAllLikeName",
+    	                    type: "POST",
+    	                    dataType: "json",
+    	                    contentType : "application/json",
+    	                    crossDomain: true,
+    	                    processData: true,
+    	                    data:myjson,
+    	                    
+    	                    success: function(response){  
+    	                 	   
+    	                    	 var data =JSON.parse(JSON.stringify(response)); 
+    	                        console.log(data);  
+    	                      
+    	                        
+    	                       
+    	                        
+    	                        
+    	                         var st;
+    	                        // $("#showlikesnames").html(st);
+    	                         for (var i=0; i < data.length; i++){
+    	                      	st+="<div>";
+    	                      	st+="<div class=\" col-sm-3\"><img class="+"\"img-responsive\""+"alt="+"\"logo\""+"src="+"\"users/"+data[i].emailID+"/profilePic.jpg\""+" /></div>";
+    	                      	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+    	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+    	                      	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+    	                      	 st+="</div>"; 
+    	                      	 st+="<hr>";
+    	                       
+    	                      	 
+    	                        } 
+    	                         
+    	                         st=st.replace("undefined","");
+    	                      	 $("#showlikesnames").html(st);
+    	                         
+    	                         $('#likeModal').modal({
+    	                             show: true
+    	                         });
+    	                        
+    	                        
+    	                    },
+    	                    
+    	                    error: function(e){  
+    	    					alert('Errorinsidelikehover: ' + e);  
+    	    					alert(e.toString());
+    	    			}		
+    	                
+    	        	  }); //ajax call ends
+    	           		  
+    	    			
+    	    			
+    	    			
+    	    			
+    	    			
+    	    			
+    	    		 
+    	    	  }//like hover fun ends
+    	  
+    	    	 
+    	  
+    			 window.like = function(e1){
+    				 
+    	    		  
+    				   var tempid= $(e1).attr('id');
+    				   var statusid = tempid.slice(4);
+    				 //  alert(statusid);
+    				   
+    				  /*  alert("cccacacaca"+statusid);
+    				   */ var sid={statusID:statusid};
+    				   var myJSON=JSON.stringify(sid);
+    				   //alert(statusid);
+    				   
+    				   
+    				   $.ajax({ 
+                url: "http://localhost:8080/facebook_group2/webapi/status/incrementLike",
+                type: "POST",
+                dataType: "text",
+                contentType : "application/json",
+                data : myJSON,
+                crossDomain: true,
+                processData: true,
+                
+                
+                success: function(response){  
+             	   
+                    // we have the response  
+             	   if(response!=null){
+
+             		  refresh();
+                      
+             	   }
+             	   else{
+             		   }
+             	   
+    			},
+    			error: function(e){  
+ 					alert('Error in like: ' + e);  
+ 					alert(e.toString());
+			}				
+ 
+}); 
+}//like fun ends
+    			 
+    			 window.unlike = function(e1){
+    				 
+  				   var statusid= $(e1).attr('id');
+  				   var sid={statusID:statusid};
+  				   var myJSON=JSON.stringify(sid);
+  				   //alert(statusid);
+  				   
+  				   
+  				   $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/status/decrementLike",
+              type: "POST",
+              dataType: "text",
+              contentType : "application/json",
+              data : myJSON,
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+           	   
+                  // we have the response  
+           	   if(response!=null){
+          
+           		   //alert(response);
+           	   }
+           	   
+           	   
+  			},
+  			error: function(e){  
+					alert('Error121212: ' + e);  
+					alert(e.toString());
+			}				
+}); 
+}//unlike fun ends
+    			 
+    			 
+    			 
+   
+    			 window.comment = function(e1){
+    				 
+    				   var statusid= $(e1).attr('id');
+    				   var chk="comment_d";
+    				   chk+=statusid;
+    				  // alert(chk);
+    				   var comment_desc=document.getElementById(chk).value;
+    				   
+    				  /*  alert(statusid);*/
+    				   //alert("comment"+comment_desc); 
+    				   var sid={statusID:statusid,comment_desc:comment_desc};
+    				   var myJSON=JSON.stringify(sid);
+    				   //alert(statusid);
+    				   
+    			   
+    				   $.ajax({ 
+                url: "http://localhost:8080/facebook_group2/webapi/status/addComment",
+                type: "POST",
+                dataType: "text",
+                contentType : "application/json",
+                data : myJSON,
+                crossDomain: true,
+                processData: true,
+                
+                
+                success: function(response){  
+             	   
+                    // we have the response  
+             	   if(response!=null){
+             		  $('#comment_d').val('');
+             		   //alert(response);
+             		 refresh();
+             	   }
+             	   else{
+             		   }
+             	   
+    			},
+    			error: function(e){  
+ 					alert('Error121212: ' + e);  
+ 					alert(e.toString());
+			}				
+ 
+}); 
+}
+    		
+
+
+         /*  pppppppoooooooooooooossssssstttttttt*/
+                 	 $("#postbutton").click(function(e){
+                 		 
+                 		
+
+                 		 
+                 		var statusdesc= document.getElementById("posttext").value;
+                 		 //var file_data = $("#file-select").prop("files")[0]; 
+                 		 if(/* (file_data==null)&& */(statusdesc=="")){}
+                 		 else{
+                 		 //alert(x);
+                 		 var obj2={status_desc:statusdesc,feeling:feeling,timelineid:timelineid};
+                 		 var mahjson=JSON.stringify(obj2);
+                 		 $.ajax({
+     	        type: "POST",
+     	        contentType: "application/json",  //send data to server in this format
+
+     	        url:"http://localhost:8080/facebook_group2/webapi/status/addStatus",
+     	        dataType: "json",  //expect response of this type
+
+     	        data: mahjson,
+     	        success: function(resp){
+     	    	   
+     	    	  if(resp!=null){
+
+     	    		 var obj1 = JSON.parse(JSON.stringify(resp));
+              	   	 var statusid=obj1.statusID;
+              	   //console.log(statusid);
+            		
+              	
+                 		/*   // Getting the properties of file from file field
+                 		if(file_data!=null){
+                 		var form_data = new FormData();                  // Creating object of FormData class
+                 		form_data.append("file", file_data);             // Appending parameter named file with properties of file_field to form_data
+                 
+
+                 		form_data.append("status_id",statusid);  
+                 	
+                 		$.ajax({
+                 	                
+                 	              	type:"POST",
+                 	              	contentType:false,
+                 	              	url: "http://localhost:8080/facebook_group2/webapi/user/uploadProfilePic2",
+                 	                processData: false,
+                 	                data: form_data,                         // Setting the data attribute of ajax with file_data
+                 	                success: function(){
+                 	                	
+                 	                	
+                 	                	 if(resp!=null){alert("pic posted");}
+                 	                	else{} 
+                 	                	
+                 	                	
+                 	                
+                 	      				location.reload();
+                 		      	       },
+                 	          	       
+                 	          	      error: function(){
+                 	        	           // alert('status posting errorrrrrr');
+                 	        	        }	 
+                 	                     
+                 		
+                 		
+                 		});    //inner ajax ends              
+                 		}	 */
+						location.reload();
+     	    		 $('#posttext').val('');
+                 		}//file data not null
+                 		else
+                 		{
+                 			alert('hre');	
+                 		}
+     	    	  
+                 		 
+     	    	  },//suucess ends
+     	    	  
+     	    	   
+     	      
+     	       
+     	      error: function(jqXHR, textStatus, errorThrown){
+   	            alert('status posting error: ' + textStatus);
+   	        }	 
+                 		 
+                 		 
+                });    		 
+                 	             
+
+       	                       
+             }
+         	
+       });      	
+                 	
+                 	 
+                 	 
+                 	$("#comment").click(function(){
+                 	    /* $(this).next("#forcomment").slideToggle(200)
+                 	           .find("comment_d").focus(); */
+                 	           
+                 	           
+                 	    return false;
+                 	});
+                 	 
+                 	 
+                 	 
+                 	 
+                 	
+                 	
+      	  $("#logoutButton1").click(function(e){
+     		
+         	   window.location.replace("appHome.html");
+     	           	   	        	
+     	       
+     	   });//logout button ends ends
+     	   
+     	   
+
+     	  $.ajax({ 
+              url: "http://localhost:8080/facebook_group2/webapi/friend/getMyAllFriends",
+              type: "GET",
+              dataType: "json",
+              contentType : "application/json",
+              crossDomain: true,
+              processData: true,
+              
+              
+              success: function(response){  
+           	   
+                  // we have the response  
+           	   if(response!=null){
+                  var data =JSON.parse(JSON.stringify(response));  
+                   var allFriends;
+           	 
+                 	for (var i=0; i < data.length; i++){
+               		 allFriends+="<div class=\"panel-body\">";
+               
+          	 allFriends+='<a href="friendTimeline.html" OnClick=go(this); id="'+data[i].userID+'" data-html="true"  data-placement="left" data-toggle="popover"  data-trigger="click hover" data-content=\'<div class="item active"><img src="users/'+data[i].emailID+'/cover.jpg" class=" img-responsive" width="1000" height="400" style="float:left;"><div><div class="img-container" style="display:inline-block;"><img class="img-thumbnail" src="users/'+data[i].emailID+'/profilePic.jpg" style="width:60px;height:60px;/"></div><div class="text" style="display:inline-block;margin-left:0.2cm;"><p><strong>'+data[i].fname+" "+data[i].lname+'</strong></p></div><div style="margin-left:1.5cm;"><p style="color:grey"><span class="glyphicon glyphicon-home"></span> <b>'  +'Lives in: '+ '</b> '+ data[i].hometown+'<br/><br/><span class="glyphicon glyphicon-gift"></span> <b>Born on: </b> '+ data[i].date +'<br><br><a href="#" style="color:grey"; OnClick=mutual(this); id='+data[i].userID+'><span class="glyphicon glyphicon-user"></span> See Mutual Friends</p></div></div>\'>'+'<img src="users/'+data[i].emailID+'/profilePic.jpg" style="width:20px;height:20px;">'+data[i].fname+" "+data[i].lname+'</a><br/>';
+
+                       allFriends+="</div>";
+               		allFriends+="</div>";
+  					     	}
+               	
+               allFriends=allFriends.replace("undefined","");
+           	   $("#allFriends").html(allFriends);
+          
+                  }  
+                  
+                  else
+               	   {
+               	  alert("something wrong");
+               	   }
+                },
+  	    
+     			error: function(e){  
+       					alert('Error121212: ' + e);  
+       					alert(e.toString());
+     			}				
+       
+  	  });//ajax call end
+    	
+    	  
+         	window.go = function(e1){
+       		 
+     		   var friendUserID= $(e1).attr('id');
+     		   $.cookie("ID1",friendUserID);
+     		   //window.location.replace("friendTimeline.html");
+         	  
+     		
+     	   }
+
+  	  
+         	 window.mutual=function(e1){
+        		 var foo=$(e1).attr('id');
+        		  $.cookie("ID5",foo); 
+        		//  alert(foo);
+        			$.ajax({ 
+                        url: "http://localhost:8080/facebook_group2/webapi/friend/count_of_MutualFriends",
+                        type: "GET",
+                        dataType: "json",
+                        contentType : "application/json",
+                        crossDomain: true,
+                        processData: true,
+                        
+                        
+                        success: function(response){  
+                     	   
+                            // we have the response  
+                     	   if(response!=null){
+                            // alert("data is come");
+                     		  var data =JSON.parse(JSON.stringify(response));
+        						 
+                     		    var st;
+                     		   if(data.length==0){
+                                   st+="<div><p>No Mutual Friends Found for this friend</p></div>";
+                                   }
+                                // $("#showlikesnames").html(st);
+                                else{
+                                 for (var i=0; i < data.length; i++){
+                              	st+="<div>";
+                              	st+="<font size="+"\"4\">"+data[i].fname+data[i].lname+"</font>";
+                              	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggest(this)"+";\">Suggest</button>";
+                              	// st+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right\""+"id=\""+data[i].emailID+"\""+" OnClick=\"suggestignore(this);\">Ignore</button>";
+                              	 st+="</div>"; 
+                              	 st+="<hr>";
+                                 }
+                              	 
+                                } 
+                                 
+                                 st=st.replace("undefined","");
+                              	 $("#showMutualnames").html(st);
+                                 
+                                 $('#MutualModal').modal({
+                                     show: true
+                                 });
+                                
+                                
+                             
+                            
+                     	   
+                     	   
+                     	   
+                     	   
+                     	   
+                     	   }  
+                            
+                            else
+                         	   {
+                         	  alert("something wrong");
+                         	   }
+                          },
+         	    
+               			error: function(e){  
+                 					alert('Error121212: ' + e);  
+                 					alert(e.toString());
+               			}				
+                 
+         	  }); 
+        	
+        	  
+        	  }//mutual fun ends here
+  	  
+  	  
+  	  
+  	 
+    	  
+    	  $("#search").click(function(e){
+     	    var key=$("input#srch-term").val();
+            $.cookie("key",key);
+                  //  alert(key);
+    	   });//search button ends ends
+    	 // reset password function  
+    	   $("#resetPassword").click(function(e){
+    		   
+    		   var current_password=$("input#cpass").val();
+    		   var new_password=$("input#npass").val();
+    		 //  alert(current_password);
+    		  // alert(new_password);
+    		   if((current_password=="")||(new_password==""))
+             	{
+           	       alert("please fill both the fields");
+           	       window.location.replace("userHome1.html");
+           	    }
+    		   else if((new_password.length)<6){
+    			   alert("Password should be minimum 6 characters");
+           	       window.location.replace("userHome1.html");
+    		   }
+    		   else{ 
+    		   $.cookie("cpass",current_password);
+    		   $.cookie("npass",new_password);
+    		   $.ajax({
+                   type: "POST",  //send data to server in this format
+                   url:"http://localhost:8080/facebook_group2/webapi/user/resetpassword",
+                   dataType: "text",  //expect response of this type
+                   success: function(resp){
+                       
+                       if(resp!=null){
+                    	   window.location.replace("userHome1.html");
+                       }    
+                       else
+                       {
+                    	   alert("current password is not correct");
+                    	   window.location.replace("userHome1.html");
+                       }    
+                       
+                       
+                   },
+                   error: function(jqXHR, textStatus, errorThrown){
+                       alert('logout error: ' + textStatus);
+                   }
+               }); // ajax call end
+    		   
+    		   }
+    		   
+    	   });
+    	   
+
+    	   
+    	   $("#testsubmit").click(function(e){
+    		   
+               // window.location.replace("todoPage.html");
+                var femailid=$("input#testtext").val();
+                
+              //  alert("email id is: "+femailid)
+                if((femailid==""))
+                	{
+                	alert("please fill the fields");
+                	window.location.replace("userHome1.html");
+                	}
+                
+                
+                 $.ajax({ 
+                    url: "http://localhost:8080/facebook_group2/webapi/friend/peopleYouMay_KnowMutualFriends",
+                    type: "GET",
+                    dataType: "json",
+                    contentType : "application/json",
+                    crossDomain: true,
+                    processData: true,
+                    
+                    
+                    success: function(response){  
+                 	   
+                        // we have the response  
+                 	   if(response!=null){
+                        var data =JSON.parse(JSON.stringify(response)); 
+                       // console.log(data);
+                         var mayKnow;
+                         
+                       //  alert("inside ajax: "+femailid);
+                 	 
+                      
+                       var len=data.length;
+                       //alert("length is: "+len);
+                     	 for (var i=0; i < data.length; i++){
+                 			
+                     		//alert("data[i].emailID : "+data[i].emailID);
+                     		//alert("femailid : "+femailid);
+                     		 
+                     		if(data[i].emailID==femailid)
+                     			{
+                      			
+								//alert("entered in: ");                     			
+                     			
+                     			 $.ajax({
+                                     type: "POST",
+                                     contentType: "text/plain",  //send data to server in this format
+                                     url:"http://localhost:8080/facebook_group2/webapi/event/lab1",
+                                     dataType: "json",  //expect response of this type
+                                     data: femailid,
+                                     success: function(resp){
+                                         
+                                        
+                                                          
+                                        	 
+                                        	 
+                                        	 if(resp!=null){
+                                                 var data =JSON.parse(JSON.stringify(resp));  
+                                                  var allevent;
+                                                 // alert("hello");
+                                                 console.log(data);
+                                                  if(data.length==0){
+                                                    	 $("#allevents").html("<font size=\"4\"> NO EVENT Created By You Yet</font>");
+                                                    }
+                                                for(var i=0;i<data.length;i++){
+                                             	   
+                                             	   allevent+="<div class=\"panel panel-default\">";
+                                             	//   allevent+="<div class="+"\"panel-body\""+"id=\"forcomment\""+">";
+                                             	   allevent+="<div class="+"\"row\""+">";
+                                             	   allevent+="<div class="+"\"col-md-12\""+">";
+                                             	   allevent+="<br><br>";
+                                             	   allevent+="<a href=\"#\" id=\""+data[i].eID+"\" OnClick=\"newtest(this);\"><p><font size="+"\"3\""+"color="+"\"blue\""+">"+"Event name:"+data[i].ename+"</font></p></a>" ;
+                                             	   allevent+="<hr>";
+                                             	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Host-name: "+data[i].hname+"</font></p><br>" ;
+                                             	   allevent+="<p><font size="+"\"3\" color=\"Green\" "+">"+"Event-date: "+data[i].event_date+"</font></p><br>" ;
+                                             	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Event-time: "+data[i].time+"</font></p><br>" ;
+                                             	   allevent+="<p><font size="+"\"3\"color=\"Green\""+">"+"Event-location: "+data[i].location+"</font></p><br>" ;
+                                             	  // allevent+="<a href=\"EventDetail.html\" id=\""+data[i].eID+"\" OnClick=\"go(this);\">Invite-Friend</a> &nbsp;";
+                                             	  allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right \""+"id=\""+data[i].eID+"\""+" OnClick=\"go(this);\">Invite-Friend</button>"; 
+                                             	  allevent+="<a href="+"\"#\""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\""+"><span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> <font size=\"3\" color="+"\"#3b5998\""+">Delete</font></a>";
+                                             	   
+                                             	 // allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary pull-right \""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\">Delete</button>";
+                                             	  // allevent+="<a href=\"#\" id=\""+data[i].eID+"\" OnClick=\"dele(this);\">DELETE</a>";
+                                             	 
+                                             	   allevent+="</div>";
+                                             	   allevent+="<br>";
+                                                     allevent+="</div>";
+                                                     allevent+="</div>";
+                                                     //allevent+="</div>";
+                                                     /* allevent+="<span class="+"\"glyphicon glyphicon-trash\""+">";
+                                                		allevent+="<button type="+"\"button\""+" class="+"\"btn btn-primary \""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\">Delete</button>";
+                                                		allevent+="</span>";
+                                                		<span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> ;
+                                                		allevent+="<a href="+"\"#\""+"id=\""+data[i].eID+"\""+" OnClick=\"dele(this);\""+"><span class="+"\"glyphicon glyphicon-trash\""+ "style="+"\"color:#3b5998\""+"></span> <font color="+"\"#3b5998\""+">Delete</font></a>";
+                                              	   
+                                                		*/
+                                                }
+                                             	
+                                             allevent=allevent.replace("undefined","");
+                                             
+                                         	   $("#showallevents").html(allevent);
+                                        
+                                                 
+                                        	 
+                                        	 
+                                        	 
+                                        	 
+                                        	 
+                                         }    
+                                         else
+                                         {
+                                             alert("lab1 failed ");
+                                             window.location.replace("userHome1.html");
+                                         }    
+                                         
+                                         
+                                     },
+                                     error: function(jqXHR, textStatus, errorThrown){
+                                         alert('lab1 error: ' + textStatus);
+                                     }
+                                 });
+                                 
+                     		 	 break;
+                     			
+                     			}
+                     			if(i==len-1)
+                     				{
+                     					alert("this email id is not in the people you may know.");
+                     				}
+                     		} 
+                        }  
+                        
+                        else
+                     	   {
+                     	 // alert("something wrong");
+                     	   }
+                      },
+        	    
+           			error: function(e){  
+             					alert('Error121212: ' + e);  
+             					alert(e.toString());
+           			}	 		
+             
+        	  });
+             
+                
+                
+                
+                
+                
+                             
+
+             
+             
+              
+                     
+     	   });//create group button ends ends
+     	    
+    	   
+    	   
+    	   
+    	   
+    	   
+    	   
+    	   
+    	   
+    	   
+    	   
+
+    	   $("#createGroup").click(function(e){
+    		   var group_privacy="public";
+               // window.location.replace("todoPage.html");
+                var group_name=$("input#group_name").val();
+                if((group_name==""))
+                	{
+                	alert("please fill the fields");
+                	window.location.replace("userHome1.html");
+                	}
+                var obj = {group_name:group_name,group_privacy:group_privacy
+                           };  
+                   var myJSON = JSON.stringify(obj);
+                   //document.write(myJSON);
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",  //send data to server in this format
+                    url:"http://localhost:8080/facebook_group2/webapi/group/create_group",
+                    dataType: "text",  //expect response of this type
+                    data: myJSON,
+                    success: function(resp){
+                        
+                        if(resp!=null){
+                                         //   alert("group created");
+                                       window.location.replace("myGroups.html");
+                        }    
+                        else
+                        {
+                            alert("group creation failed ");
+                            window.location.replace("userHome1.html");
+                        }    
+                        
+                        
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('logout error: ' + textStatus);
+                    }
+                });
+                
+                             
+
+             
+             
+             
+                     
+     	   });//create group button ends ends
+     	    
+    	   
+        }); //document ready ends 
+        
+ jQuery(document).ajaxComplete(function (e) {
+        	
+        	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+        	$.fn.popover.Constructor.prototype.leave = function(obj){
+        	  var self = obj instanceof this.constructor ?
+        	    obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+        	  var container, timeout;
+
+        	  originalLeave.call(this, obj);
+
+        	  if(obj.currentTarget) {
+        	    container = $(obj.currentTarget).siblings('.popover')
+        	    timeout = self.timeout;
+        	    container.one('mouseenter', function(){
+        	      //We entered the actual popover – call off the dogs
+        	      clearTimeout(timeout);
+        	      //Let's monitor popover content instead
+        	      container.one('mouseleave', function(){
+        	        $.fn.popover.Constructor.prototype.leave.call(self, self);
+        	      });
+        	    })
+        	  }
+        	};
+        	
+        	
+        	
+        	
+        	 $('[data-toggle="popover"]').popover({
+           		 placement:'left',
+           		 delay:{show: 50, hide: 400}
+           		 })  
+           	}); 
+        
+        
+        
+ $( function() {
+	    $( "#datepicker" ).datepicker({dateFormat: "yy-mm-dd"});
+	  } );
+	  $( function() {
+		    $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+		  } );
+
+        
+        </script>
+        
+    </head>
+    
+     <body>
+        
+        <div class="wrapper">
+			<div class="box">
+				  <div class="row row-offcanvas row-offcanvas-right">
+				 
+				
+					<!-- main right col -->
+					<div class="column col-sm-12 col-xs-12" id="main">
+						
+						<!-- top nav -->
+						 <div class="navbar navbar-blue navbar-static-top">  
+                            <div class="navbar-header">
+                              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                              </button>
+                              <a href="#" class="navbar-brand logo">f</a>
+                            </div>
+                            <nav class="collapse navbar-collapse " role="navigation" align="center">
+                            <form class="navbar-form navbar-left" action="Search.html">
+                                <div class="input-group input-group-sm" style="max-width:480px;">
+                                  <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                  <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit" id="search"><i class="glyphicon glyphicon-search"></i></button>
+                                  </div>
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav navbar-center">
+                            <li>
+                                <a href="timeLine1.html" id="userName"><i class="glyphicon glyphicon-user"></i> User Name</a>
+                              </li>
+                              <li>
+                                <a href="userHome1.html"><i class="glyphicon glyphicon-home"></i> Home</a>
+                              </li>
+                                <li>
+                                <a href="userFriend.html"><i class="glyphicon glyphicon-user"></i> Find Friends</a>
+                              </li>
+                              
+                           
+							 <li role="separator" class="divider"></li>
+   
+
+	                              <li>
+                                
+                                	<a type="submit" class="" id="logoutButton1">Logout</a> 
+                             	
+                             </li>
+							 
+<li>
+<a href="#" data-toggle="modal" data-target="#ModalresetPassword">Reset Passowrd</a> 
+</li>
+
+							</ul>
+                           
+                            
+                            </nav>
+                        </div>
+						<!-- /top nav -->
+				
+					  
+					  
+							<div class="full col-sm-12">
+							  
+								<!-- content -->
+								<div class="row">
+				
+								
+									<!-- sidebar -->
+				 		<div class="column col-sm-2 col-xs-2 "   style="background-color: #E9EAED">
+				   
+						 <ul class="nav">
+							<li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+						</ul> 
+					    
+						<ul class="nav hidden-xs" id="xs-menu">
+							
+							<li><a href="userHome1.html"><i class="glyphicon glyphicon-list"></i> News Feed</a></li>
+							<li><a href="message.html"><i class="glyphicon glyphicon-envelope"></i> Message<h5 id="notify"></h5></a></li>
+						</ul>	
+							<b>Explore</b>
+							<ul class="nav hidden-xs see-more" id="xs-menu" >
+							<li><a href="Event.html"><i class="glyphicon glyphicon-refresh"></i> Events</a></li>
+							<li><a href="myGroups.html"><i class="glyphicon glyphicon-refresh"></i> Groups</a></li>
+											</ul>
+						
+							
+							<b>Create</b>
+							<br>
+							<ul class="nav hidden-xs" id="xs-menu">
+							
+				<input type="button" id ="popup3" class="btn btn-primary" value="Group" data-toggle="modal" data-target="#groupModal" style="min-width:80px;"></br>
+				<input type="button" id ="popup4" class="btn btn-primary" value="Event" data-toggle="modal" data-target="#myModalevent" style="min-width:80px;">
+						<!-- 	<input type="text" id="inputemail">
+							<input type="button" id="pressemail" value="search">
+			 -->				
+			 	<input type="button" id ="popup5" class="btn btn-primary" value="Lab Question" data-toggle="modal" data-target="#labquestion" style="min-width:80px;"></br>
+						</ul>
+						<!-- <ul class="list-unstyled hidden-xs" id="sidebar-footer" style="background-color: #E9EAED">
+							<li>
+							  <a href="http://usebootstrap.com/theme/facebook"><h3>Bootstrap</h3> <i class="glyphicon glyphicon-heart-empty"></i> Bootply</a>
+							</li>
+						</ul> -->
+					  
+						<!-- tiny only nav-->
+					   <ul class="nav visible-xs" id="lg-menu">
+							<li><a href="#featured" class="text-center"><i class="glyphicon glyphicon-list-alt"></i></a></li>
+							<li><a href="#stories" class="text-center"><i class="glyphicon glyphicon-list"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-paperclip"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+							<li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+						</ul>
+					  
+					</div>
+					<!-- /sidebar -->
+	
+				  
+				
+				
+				
+								  
+								 <!-- main col left --> 
+								 <div class="col-sm-5 col-xs-5">
+								   
+										<div class="well"> 
+										   <form class="form-horizontal" role="form">
+											<h4>What's New</h4>
+											 <div class="form-group" style="padding:14px;">
+											  <textarea class="form-control" placeholder="Update your status" id="posttext"></textarea>
+
+											</div>  
+											
+
+ <div class="dropdown">
+  <button class="btn pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Feeling
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="Feeling">
+    <li><a href="#" data-value="Happy"><i class="glyphicon glyphicon-upload"></i>Happy</a></li>
+    <li><a href="#" data-value="Sad"><i class="glyphicon glyphicon-upload"></i>Sad</a></li>
+    <li><a href="#" data-value="Excited"><i class="glyphicon glyphicon-upload"></i>Excited</a></li>
+    <li><a href="#" data-value="Adventurous"><i class="glyphicon glyphicon-upload"></i>Adventurous</a></li>
+  	<li><a href="#" data-value="Hungry"><i class="glyphicon glyphicon-upload"></i>Hungry</a></li>
+  
+  </ul>
+</div>
+ 	
+ 
+   <br><br>
+ 	<!--  <form id="FormId">
+        <label for="file-select">Choose photo</label>
+        <input type="file" name="upload" id="file-select">
+    </form> -->
+ 	
+ 	
+ 	
+ 										
+											                  
+ 											<button class="btn1 btn-primary pull-right col-sm-1" type="button" id="postbutton">Post</button><ul class="list-inline"><li><a href=""><!-- <i class="glyphicon glyphicon-upload"></i> --></a></li></ul>
+
+											
+									<!-- 		<button class="btn btn-primary pull-right" type="button" id="postbutton">Post</button><ul class="list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
+                    -->
+										 	<!-- <div class="form-group" style="padding:14px;">
+											  <textarea class="form-control" placeholder="Update your status"></textarea>
+											</div>
+											<button class="btn btn-primary pull-right" type="button">Post</button><ul class="list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
+										   -->
+										   </form>
+									  </div>
+								   
+								   
+<div id="abcd">
+     </div></div>
+  <hr>  
+  
+
+
+								
+						 <div class="col-sm-2 col-xs-2">
+									   
+								
+
+									   <div class="panel panel-default" style="width:240px;">
+										 <div class="panel-heading"><img src="http://heatherbarmstrong.com/images/made/assets/img/uploads/press/logo/Cnn-logo-11_350_178_80grayrepl-e4e4e4-000-2a3b54.jpg" class="img-rounded" width="150" height="50" style=" margin-left:15px; margin-top:10px;"><br> <h3>News Headlines </h3></div>
+										  <div class="panel-body">
+										  	<div class="list-group" id="trending">
+ 												<!--  <a href="todoPage.html" class="list-group-item">Virat Kohli</a>
+  												 <a href="todoPage.html" class="list-group-item">Varun Dhawan</a>
+  												 <a href="todoPage.html" class="list-group-item">David Guetta</a> -->
+											 </div>
+
+								<div class="accordion-group">
+    							<div id="collapseTwwo" class="accordion-body collapse">
+     								 <div class="accordion-inner">
+      									  <ul class="nav hidden-xs see-more" id="xs-menu-news">
+										</ul>
+      
+     								 </div>
+    							</div>
+    							<div class="accordion-heading">
+      								<ul class="nav hidden-xs see-more" id="xs-menu-news">
+      								<li><a class="accordion-toggle" id = "see-more-news" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwwo"> See More ...
+      								</a></li>
+      								</ul>
+      								
+    							</div>
+  							</div>  
+									  
+
+
+				
+										  </div>
+									   </div>
+								
+								  <div class="panel panel-primary" style=" width:240px;">
+	   <div class="panel-heading"><h4>See Events</h4></div>
+		<div class="pre-scrollable" style="max-height:580px;overflow-y: scroll;width:400px">   
+		<p id="showallevents"></p>
+			</div>
+		  </div> 
+							
+							
+		
+								  </div>
+								  
+							
+		
+								  
+								  
+ 								  
+								  
+								   <!-- main col right -->
+								   <div class=" col-sm-3 col-xs-3 affix" style="float:right; left:970px; top:20px;" >
+    	 <br>
+	   <div class="panel panel-primary" style="float:right;  top:30px; min-height: 2000px ; width:250px">
+	   <div class="panel-heading"><h4>My Friends</h4></div>
+		<div class="pre-scrollable" style="max-height:580px;overflow-y: scroll;width:400px">   
+		<p id="allFriends"></p>
+			</div>
+		  </div>			    
+		</div>
+								  
+								  
+								  
+						
+<div id="MutualModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>your Mutual friends</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showMutualnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 		
+
+
+
+
+
+
+
+
+		<!--post modal-->
+		 <div id="postModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					Update Status
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group">
+					  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea>
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button>
+					<ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+
+
+
+
+
+
+		 <div id="finaltestModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>People Who Liked This Status</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showlikesnamesfinaltest">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		
+		<!--like modal-->
+		 <div id="likeModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					<h4>People Who Liked This Status</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group" id="showlikesnames">
+					
+					 <!--  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea> -->
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				 <!--  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button> -->
+					<!-- <ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul> -->
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+		
+		
+		
+		 <div id="labquestion" class="modal fade" role="dialog">
+  <div class="modal-dialog" >
+
+    <!-- Modal content-->
+<form action="" id="updateInfo">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Email Here</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+        <br>
+        <div class="form-group">
+          <label for="group_name" >Enter email id in "people you may know " :</label>
+          <input type="text"  id="testtext" style="margin-left:10px;">
+        </div>
+   <!--     <div class="form-group">
+         <label for="sel1">Privacy:</label>
+      <select class="form-control" id="group_privacy" style="margin-left:110px;width:100px">
+        <option>private</option>
+        <option>public</option>
+      </select>
+        </div> 
+        <br>   -->   
+    </div>
+       
+      <div class="modal-footer">
+       <input type="button" id ="testsubmit" class="btn btn-primary" value="Submit" data-dismiss="modal" >
+       <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+      </div>
+    
+       </form>
+    </div>
+
+  </div>
+		
+		
+		
+		
+		
+		
+		        <div id="groupModal" class="modal fade" role="dialog">
+  <div class="modal-dialog" >
+
+    <!-- Modal content-->
+<form action="" id="updateInfo">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create group here</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+        <br>
+        <div class="form-group">
+          <label for="group_name" >Group Name:</label>
+          <input type="text"  id="group_name" style="margin-left:10px;">
+        </div>
+   <!--     <div class="form-group">
+         <label for="sel1">Privacy:</label>
+      <select class="form-control" id="group_privacy" style="margin-left:110px;width:100px">
+        <option>private</option>
+        <option>public</option>
+      </select>
+        </div> 
+        <br>   -->   
+    </div>
+       
+      <div class="modal-footer">
+       <input type="button" id ="createGroup" class="btn btn-primary" value="Create group" data-dismiss="modal" >
+       <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+      </div>
+    
+       </form>
+    </div>
+
+  </div>
+		
+		
+        
+        <script type="text/javascript" src="assets/js/jquery.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+			$('[data-toggle=offcanvas]').click(function() {
+				$(this).toggleClass('visible-xs text-center');
+				$(this).find('i').toggleClass('glyphicon-chevron-right glyphicon-chevron-left');
+				$('.row-offcanvas').toggleClass('active');
+				$('#lg-menu').toggleClass('hidden-xs').toggleClass('visible-xs');
+				$('#xs-menu').toggleClass('visible-xs').toggleClass('hidden-xs');
+				$('#btnShow').toggle();
+				
+			});
+			
+			 $("#see-more").click(function() {
+		            $(this).hide();
+		        });
+        });
+        
+        
+        </script>
+        
+        
+        
+        
+  <div id="myModalevent" class="modal fade" role="dialog">
+  <div class="modal-dialog" >
+    <!-- Modal content-->
+<form action="" id="updateevent">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Event</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+        <br>
+          <div class="form-group">
+         <div class="col-md-3">
+         <label for="Event-type:">Event-type</label>
+         <select class="form-control" id="Etype" style="margin-left:0px; " width="5px">
+        <option>Public</option>
+        <option>Private</option>
+       
+      </select>
+      </div>
+        </div>
+     <br>
+     <br>
+        <br>
+        <br>
+        <div class="form-group">
+          <label for="event-name" >Event name:</label>
+          <input type="text"  id="eventname" style="margin-left:10px;">
+        </div>
+     <br>
+      <div class="form-group">
+          <label for="Host-name" >Hostname:</label>
+          <input type="text"  id="hostname" style="margin-left:10px;">
+        </div>
+             <br>
+             <div class="form-group">
+          <label for="Location" >Location:</label>
+          <input type="text"  id="location" style="margin-left:10px;">
+        </div>
+             <br>
+      
+        <div class="form-group">
+          <label for="Event-date" >Event-start-date:</label>
+          <input type="text"  id="datepicker" placeholder="yyyy-mm-dd" style="margin-left:10px;">
+        </div>
+             <br>
+             <div class="form-group">
+          <label for="Event-date" >Event-end-date:</label>
+          <input type="text" placeholder="yyyy-mm-dd"  id="datepicker1" style="margin-left:10px;">
+        </div>
+             <br>
+             
+             <br>
+          <div class="form-group">
+          
+            <label for="Event-date" >Time</label>
+            <!--  <input type="text" id="myTime1" placeholder="hh:mm Am/hh:mm PM" style="margin-left:10px;">
+     -->
+          <div id="container">
+		<div class="multibox" id="day" style="float:left;">
+		<select class="form-control" name="hours" id="hour" style="width: 80px;margin-top:3px">
+					 		<option>hour</option>
+					 		<option value="00">00</option>
+					 		<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+					 	</select>
+					</div>
+					   <div class="multibox" id="month" style="float:left">
+					 	<select class="form-control" name="minute" id="minute" style="width: 80px; margin-top:3px">
+					 		<option>Minute</option>
+					 		<option value="00">00</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="30">30</option>
+							<option value="45">45</option>
+					 	</select>
+					  </div>
+					
+					 	
+					 	<div class="multibox" id="year" style="float:left">
+		<select class="form-control" name="hours" id="hour" style="width: 80px;margin-top:3px">
+					 		<option>select</option>
+					 		<option value="AM">AM</option>
+					 		<option value="PM">PM</option>
+							
+					 	</select>
+					  </div>
+					 	</div>
+          
+          </div>
+        
+   
+        
+             <br>
+             
+    </div>
+    
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+       <input type="button" id ="createEvent" class="btn btn-primary" value="CreatenewEvent" data-dismiss="modal" >
+     
+      </div>
+    </div>
+      </div>
+    
+       </form>
+    </div>
+  </div>
+  
+  
+   <div id="ModalresetPassword" class="modal fade" role="dialog">
+  <div class="modal-dialog" >
+    <!-- Modal content-->
+<form action="" id="updateevent">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Reset-Password</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+       
+     
+     
+        <br>
+        <br>
+        <div class="form-group">
+          <label for="OLD-PASSWORD" >Current password</label>
+          <input type="password"  id="cpass" style="margin-left:10px;">
+        </div>
+     <br>
+      <div class="form-group">
+          <label for="new-password" >New password</label>
+          <input type="password"  id="npass" style="margin-left:33px;">
+        </div>
+             <br>
+          
+   
+             <br>
+             
+    </div>
+    
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+       <input type="button" id ="resetPassword" class="btn btn-primary" value="resetPAssword" data-dismiss="modal" >
+     
+      </div>
+    </div>
+      </div>
+    
+       </form>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+     
+     
+             <script>
+  $( function() {
+    $( "#datepicker" ).datepicker({dateFormat: "yy-mm-dd"});
+  } );
+  $( function() {
+	    $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+	  } );
+  </script>
+     
+		
+		
+		
+        
+</body></html>
